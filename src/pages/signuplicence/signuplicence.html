@@ -1,0 +1,51 @@
+<ion-content padding style="background-color:#ebebeb;">
+  <!-- <div class="logos">
+    <img src="assets/imgs/logo.png" alt="logo" style="width:55%;margin-left:77px;margin-top:20px">
+  </div> -->
+  <div class="LoginForm padding">
+    <h1 style="text-align:center">SignUp</h1>
+
+    <mat-form-field class="example-full-width">
+      <!-- <ion-icon matPrefix ios="ios-mail" md="md-mail"></ion-icon> -->
+      <input type="number" [(ngModel)]="user.contact" matInput placeholder="Number Phone" name="contact" required>
+    </mat-form-field>
+
+    <mat-form-field class="example-full-width">
+      <!-- <ion-icon matPrefix ios="ios-mail" md="md-mail"></ion-icon> -->
+      <input matInput [(ngModel)]="user.email" placeholder="Email Address" name="email" required>
+    </mat-form-field>
+
+    <mat-form-field class="example-full-width">
+      <input matInput [(ngModel)]="user.driversLinsence" placeholder="Driver's Licence Number" type="number">
+    </mat-form-field>
+
+    <mat-form-field class="example-full-width">
+      <input matInput [matDatepicker]="picker" [(ngModel)]="user.driversLinsenceExpiry" placeholder="Licence Expiery Date">
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+
+
+    <mat-form-field>
+  <input matInput [matDatepicker]="dp" placeholder="Verbose datepicker" [formControl]="date">
+  <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
+  <mat-datepicker #dp></mat-datepicker>
+</mat-form-field>
+
+
+
+
+
+
+
+    <br><br>
+    <div class="padding">
+      <button style="border-color: #0e5387;" id="loginButton" (click)="continue()" ion-button block outline color="light">Continue</button>
+      <!-- <button style="border-color: #0e5387;" id="loginButton" (click)="tempFinc()" ion-button block outline color="light">Continue</button> -->
+
+  </div>
+  <span (click)="backToLogin()" style="color:#4b4b4b;text-align:center;margin-top:15px;">Already have an account ? <b style="color:#318ebc;">Login</b></span>
+
+  </div>
+
+</ion-content>

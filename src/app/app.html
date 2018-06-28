@@ -1,0 +1,98 @@
+<ion-menu id="myMenu" [content]="content">
+  <ion-header>
+    <ion-toolbar color="sibleColor">
+      <ion-title>Menu</ion-title>
+    </ion-toolbar>
+  </ion-header>
+<style media="screen">
+.content-ios {
+  background-color: #0d5487;
+}
+.list-ios > .item-block:first-child {
+    border-top: 0.55px solid #c8c7cc00;
+}
+.list-ios .item-block .item-inner {
+    border-bottom: 0.55px solid #c8c7cc00;
+}
+.item-ios {
+    color: #fff;
+    background-color: #0d548700;
+}
+
+.card-ios {
+    background: #fff0;
+    color: #fff;
+}
+//this is the menu styles
+.card-md {
+    background: #0d5487;
+}
+.content-md {
+    color: #fff;
+    background-color: #0d5487;
+}
+.card-md {
+    background: #0d5487;
+}
+.custom-avatar {
+    border: 1px solid #0d5487;
+}
+.card-md {
+    color: #ffffff;
+}
+.item-md {
+    color: #ffffff;
+    background-color: #0d5487;
+}
+.list-md .item-block .item-inner {
+    border-bottom: 1px solid #0d5487 !important;
+}
+</style>
+
+  <ion-content>
+    <ion-card text-center class="hide-card"><br>
+    <img src="../assets/imgs/user.svg" class="custom-avatar"/><br>
+
+    <h2 style="color:white">Calvin Chou</h2>
+    <p style="color:white">Calvin@gmail.com</p>
+    <hr>
+</ion-card>
+<ion-list no-lines>
+           <button menuClose ion-item *ngFor="let p of pages" (click)="openPage(p)">
+               <ion-icon name="{{p.icon}}" item-left></ion-icon>
+               {{p.title}}
+           </button>
+       <!-- </ion-list> -->
+
+      <!-- <button menuClose ion-item (click)="goToHome()">
+        Home
+      </button>
+      <button menuClose ion-item (click)="goToPayemt()">
+        Payment
+      </button>
+      <button menuClose ion-item (click)="goToRides()">
+        Your Rides
+      </button>
+      <button menuClose ion-item (click)="goToPulisher()">
+        Become a Publisher
+      </button>
+      <button menuClose ion-item (click)="goToHelp()">
+        Help
+      </button>
+      <button menuClose ion-item (click)="goToLegal()">
+        Legal
+      </button>
+ -->
+
+
+
+
+
+
+    </ion-list>
+  </ion-content>
+
+</ion-menu>
+
+<!-- Disable swipe-to-go-back because it's poor UX to combine STGB with side menus -->
+<ion-nav [root]="rootPage" #content swipeBackEnabled="false"></ion-nav>

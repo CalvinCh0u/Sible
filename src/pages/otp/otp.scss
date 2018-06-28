@@ -1,0 +1,76 @@
+page-otp {
+  .LoginForm {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .LoginForm > * {
+    width: 100%;
+  }
+
+  .mat-input-element {
+    margin-left: 12px;
+  }
+
+  .content-ios {
+    color: #318ebc;
+  }
+
+  .content-md {
+    color: #318ebc;
+  }
+
+  .mat-form-field-ripple {
+    background-color: #0d5487;
+  }
+  .mat-input-element {
+    caret-color: #0d5487;
+  }
+
+  .mat-form-field-underline {
+    background-color: #766030;
+  }
+  .button-outline-md-light {
+    border-color: #0e5387 !important;
+    color: #f4f4f4;
+    background-color:rgb(13, 84, 135);
+    border-radius: 50px;
+
+    background-image: -moz-linear-gradient( 0deg, rgb(244,108,49) 0%, rgb(252,189,53) 100%);
+    background-image: -webkit-linear-gradient( 0deg, rgb(244,108,49) 0%, rgb(252,189,53) 100%);
+    background-image: -ms-linear-gradient( 0deg, rgb(244,108,49) 0%, rgb(252,189,53) 100%);
+  }
+
+
+  .button-outline-ios-light {
+    border-color: #0e5387;
+    color: #f4f4f4;
+    background-color:rgb(13, 84, 135);;
+    border-radius: 50px;
+
+
+
+
+    background-image: -moz-linear-gradient( 0deg, rgb(244,108,49) 0%, rgb(252,189,53) 100%);
+    background-image: -webkit-linear-gradient( 0deg, rgb(244,108,49) 0%, rgb(252,189,53) 100%);
+    background-image: -ms-linear-gradient( 0deg, rgb(244,108,49) 0%, rgb(252,189,53) 100%);
+
+
+
+  }
+
+
+  .LoginForm {
+    padding: 17px;
+  }
+
+  ion-footer {
+    left: 0;
+    bottom: 15px;
+  }
+
+  .scroll-content{
+     margin-bottom: 0px !important;
+     padding-bottom: 0px !important;
+  }
+}

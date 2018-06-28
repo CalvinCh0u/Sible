@@ -1,0 +1,51 @@
+
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>addcard</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+<ion-content padding>
+  <div class="addCardForm padding">
+    <form class="example-form">
+    <mat-form-field class="example-full-width">
+      <ion-icon matPrefix ios="ios-mail" md="md-mail"></ion-icon>
+      <input type="number" matInput placeholder="&#160;Card Number">
+      <!-- [(ngModel)]="data.cardNumber" -->
+    </mat-form-field>
+
+    <table class="example-full-width" cellspacing="0">
+      <tr>
+        <td>
+          <mat-form-field class="example-full-width">
+            <input matInput [matDatepicker]="picker" placeholder="Exp.Date">
+             <!-- [(ngModel)]="data.ExpDate" -->
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
+        </td>
+        <td>
+          <mat-form-field class="example-full-width">
+            <ion-icon matPrefix ios="ios-mail" md="md-mail"></ion-icon>
+            <input type="number" matInput placeholder="&#160; CVV">
+          </mat-form-field>
+           <!-- [(ngModel)]="data.CVV" -->
+        </td>
+      </tr>
+    </table>
+
+    <mat-form-field class="example-full-width">
+      <ion-icon matPrefix ios="ios-mail" md="md-mail"></ion-icon>
+      <input type="number"matInput placeholder="&#160; Country">
+    </mat-form-field>
+     <!-- [(ngModel)]="data.Country"  -->
+
+    <div class="padding">
+        <button style="border-color: #0e5387;" id="loginButton" (click)="addCard()" ion-button block outline color="light">Save</button>
+    </div>
+</form>
+  </div>
+
+</ion-content>

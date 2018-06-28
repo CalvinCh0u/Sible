@@ -1,0 +1,49 @@
+<ion-content padding style="background-color:#ebebeb;">
+  <!-- <div class="logos">
+    <div style="height:70px">
+
+    </div>
+    <!-- <img src="assets/imgs/logo.png" alt="logo" style="width:45%;margin-left:77px;margin-top:20px;height:110px"> --
+  </div> -->
+
+  <div class="LoginForm padding">
+    <h1 style="text-align:center">SignUp</h1>
+
+    <mat-form-field class="example-full-width">
+      <input matInput [(ngModel)]="user.firstname" placeholder="Full names" name="firstname" required>
+    </mat-form-field>
+
+    <mat-form-field class="example-full-width">
+      <input matInput [(ngModel)]="user.lastname" placeholder="Surname" name="lastname" required>
+    </mat-form-field>
+
+    <mat-form-field class="example-full-width">
+      <input matInput [(ngModel)]="user.identityNumber" placeholder="ID Number" name="identityNumber" required>
+    </mat-form-field>
+
+    <!-- <mat-form-field class="example-full-width">
+      <input matInput [(ngModel)]="user.dateOfBirth" placeholder="Date of birth" name="dateOfBirth" required type="date">
+    </mat-form-field> -->
+
+    <mat-form-field class="example-full-width">
+      <input matInput [matDatepicker]="picker" [(ngModel)]="user.dateOfBirth" placeholder="Date of birth">
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+
+
+    <mat-form-field class="example-full-width">
+      <input matInput [(ngModel)]="user.password" placeholder="  &#160; Create your password" [type]="hide ? 'password' : 'text'"  name="password">
+      <mat-icon matSuffix (click)="hide = !hide">{{hide ? 'visibility' : 'visibility_off'}}</mat-icon>
+    </mat-form-field>
+    <!--<br>-->
+    <div class="padding">
+      <!-- <button style="border-color: #0e5387;" id="loginButton" (click)="continue()" ion-button block outline color="light">Continue</button> -->
+      <button style="border-color: #0e5387;" id="loginButton" (click)="tempFunction()" ion-button block outline color="light">Continue</button>
+
+    </div>
+    <span (click)="backToLogin()" style="color:#4b4b4b;margin-top:15px;text-align:center;">Already have an account ? <b style="color:#318ebc;">Login</b></span>
+
+  </div>
+
+</ion-content>
