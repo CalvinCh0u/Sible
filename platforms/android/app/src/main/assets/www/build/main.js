@@ -1,16 +1,17 @@
-webpackJsonp([16],{
+webpackJsonp([18],{
 
 /***/ 112:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return HomePage; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__ionic_native_google_maps__ = __webpack_require__(209);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__ionic_native_google_maps__ = __webpack_require__(208);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_ionic_angular__ = __webpack_require__(13);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__ionic_native_geolocation__ = __webpack_require__(213);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__ionic_native_toast__ = __webpack_require__(214);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_ionic_angular__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__ionic_native_geolocation__ = __webpack_require__(212);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__ionic_native_toast__ = __webpack_require__(213);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__payment_payment__ = __webpack_require__(83);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__providers_rest_rest__ = __webpack_require__(54);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -29,6 +30,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
+
 // declare var google;
 //API Key For Web =  AIzaSyAghH73vrrSIqBQACMzXpgg3ZG-EUwKK-E
 //API Key for Android = AIzaSyBIpAKhZrSO99TaNmlBuy3f5GPRqfhrnD8
@@ -36,26 +38,55 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var HomePage = /** @class */ (function () {
     // @ViewChild('map') mapElement: ElementRef;
     // map: any;
-    function HomePage(navCtrl, geoloc, toast, modalController, viewCtrl, platform) {
-        // this.onLocateUser();
+    function HomePage(navCtrl, geoloc, toast, restProvider, modalController, viewCtrl, platform) {
+        // if(!this.map) this.loadMap();
         this.navCtrl = navCtrl;
         this.geoloc = geoloc;
         this.toast = toast;
+        this.restProvider = restProvider;
         this.modalController = modalController;
         this.viewCtrl = viewCtrl;
         this.platform = platform;
         this.gmLocation = { lat: 0, lng: 0 };
+        this.onLocateUser();
         // setInterval(() => {
-        //     this.onLocateUser();;
+        //     this.onLocateUser();
+        // this.getUserData();
         // }, 1000);
         // Observable.interval(10000).takeWhile(() => true).subscribe(() => this.function());
         platform.registerBackButtonAction(function () {
             console.log("backPressed 1");
         });
     }
+    HomePage.prototype.ionViewWillEnter = function () {
+        console.log('ngAfterViewInit MapPage');
+        this.loadMap(); // works fine every time without error
+    };
+    HomePage.prototype.ionViewDidEnter = function () {
+        console.log('ionViewDidEnter MapPage');
+        console.log(this.map); // always returns the map object so it's still there
+        // if(!this.map) this.loadMap(); // never needs to fire
+        // need to reset tab/page stacking order?
+    };
     HomePage.prototype.ionViewDidLoad = function () {
-        console.log('this is a map');
-        this.loadMap();
+        console.log('this is a map ');
+        // this.onLocateUser();
+        // this.loadMap();
+        // if(!this.map) this.loadMap();
+    };
+    HomePage.prototype.getUserData = function () {
+        var _this = this;
+        alert('this is a value trial : ' + this.user.userName);
+        return new Promise(function (resolve) {
+            _this.restProvider.__getUser(_this.user).then(function (result) {
+                console.log(result);
+                alert(result);
+            }, function (err) {
+                console.log(err);
+            });
+        });
+    };
+    HomePage.prototype.cancelRide = function (data) {
     };
     HomePage.prototype.goToSecond = function () {
         this.navCtrl.push(__WEBPACK_IMPORTED_MODULE_5__payment_payment__["a" /* PaymentPage */]);
@@ -66,8 +97,8 @@ var HomePage = /** @class */ (function () {
         this.geoloc.getCurrentPosition()
             .then(function (location) {
             console.log('position gotten: long:', location.coords.longitude, ' lat:', location.coords.latitude);
-            // localStorage.lat = location.coords.longitude;
-            // localStorage.lng = location.coords.latitude;
+            localStorage.lat = location.coords.longitude;
+            localStorage.lng = location.coords.latitude;
             _this.location = location;
             _this.gmLocation.lat = location.coords.latitude;
             _this.gmLocation.lng = location.coords.longitude;
@@ -81,13 +112,14 @@ var HomePage = /** @class */ (function () {
     //     console.log(toast);
     //   });
     HomePage.prototype.loadMap = function () {
-        // console.log(this.location);
         var _this = this;
+        this.onLocateUser();
+        // console.log(this.location);
         var mapOptions = {
             camera: {
                 target: {
-                    lat: localStorage.lat,
-                    lng: localStorage.lng
+                    lat: localStorage.lng,
+                    lng: localStorage.lat
                 },
                 zoom: 18,
                 tilt: 0
@@ -98,17 +130,18 @@ var HomePage = /** @class */ (function () {
         // Wait the MAP_READY before using any methods.
         this.map.one(__WEBPACK_IMPORTED_MODULE_0__ionic_native_google_maps__["b" /* GoogleMapsEvent */].MAP_READY)
             .then(function () {
-            _this.lat = _this.gmLocation.lat;
-            _this.lng = _this.gmLocation.lng;
+            _this.lat = _this.gmLocation.lng;
+            _this.lng = _this.gmLocation.lat;
             console.log('Map is ready!');
+            alert('Lat => ' + localStorage.lat + ' Lng => ' + localStorage.lng);
             // Now you can use all methods safely.
             _this.map.addMarker({
                 title: 'This is You',
                 icon: 'blue',
                 animation: 'DROP',
                 position: {
-                    lat: localStorage.lat,
-                    lng: localStorage.lng
+                    lat: localStorage.lng,
+                    lng: localStorage.lat
                 }
             })
                 .then(function (marker) {
@@ -177,9 +210,15 @@ var HomePage = /** @class */ (function () {
     ], HomePage.prototype, "element", void 0);
     HomePage = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_1__angular_core__["m" /* Component */])({
-            selector: 'page-home',template:/*ion-inline-start:"/Users/john/Desktop/Desktop/Workspace/sible/src/pages/home/home.html"*/'<ion-header>\n  <ion-navbar color="sibleColor">\n    <button ion-button menuToggle>\n      <ion-icon name="menu"></ion-icon>\n    </button>\n    <ion-title>Home</ion-title>\n  </ion-navbar>\n</ion-header>\n\n\n<ion-content style="background-color:#e3eaef">\n\n <!-- <br>\n  <ion-item class="do">\n    <ion-label> <ion-icon name="car"></ion-icon></ion-label>\n    <ion-input (click)="openModal()" id="places" placeholder="Where to?"  clearInput type="text"></ion-input>\n  </ion-item> -->\n  <!--<div style="height:7px">\n\n  </div> -->\n\n<!-- <button ion-button (click)="goToSecond()">Test</button> -->\n<!--\n  <ion-item class="do">\n    <ion-label> <ion-icon name="pin"></ion-icon></ion-label>\n    <ion-input id="places" placeholder="Drop-Off Location"  clearInput type="text"></ion-input>\n  </ion-item> -->\n\n  <!-- <button ion-button (click)="addMarker()"><ion-icon name="add"></ion-icon>Add Marker</button> -->\n  <div style="background-color:#000" #mapCanvas style="height:100% !important;width:100% !important">\n  </div>\n\n  <ion-fab right bottom>\n    <button (click)="openModal()" ion-fab color="sibleColor"><ion-icon name="ios-car-outline"></ion-icon></button>\n  </ion-fab>\n\n\n</ion-content>\n'/*ion-inline-end:"/Users/john/Desktop/Desktop/Workspace/sible/src/pages/home/home.html"*/
+            selector: 'page-home',template:/*ion-inline-start:"/Users/john/Documents/GitHub/Sible/src/pages/home/home.html"*/'<ion-header>\n  <ion-navbar color="sibleColor">\n    <button ion-button menuToggle>\n      <ion-icon name="menu"></ion-icon>\n    </button>\n    <ion-title>Home</ion-title>\n  </ion-navbar>\n</ion-header>\n\n\n<ion-content style="background-color:#e3eaef">\n\n <!-- <br>\n  <ion-item class="do">\n    <ion-label> <ion-icon name="car"></ion-icon></ion-label>\n    <ion-input (click)="openModal()" id="places" placeholder="Where to?"  clearInput type="text"></ion-input>\n  </ion-item> -->\n  <!--<div style="height:7px">\n\n  </div> -->\n\n<!-- <button ion-button (click)="goToSecond()">Test</button> -->\n<!--\n  <ion-item class="do">\n    <ion-label> <ion-icon name="pin"></ion-icon></ion-label>\n    <ion-input id="places" placeholder="Drop-Off Location"  clearInput type="text"></ion-input>\n  </ion-item> -->\n\n  <!-- <button ion-button (click)="addMarker()"><ion-icon name="add"></ion-icon>Add Marker</button> -->\n  <div style="background-color:#000" #mapCanvas style="height:100% !important;width:100% !important">\n  </div>\n\n  <ion-fab right bottom>\n    <button (click)="openModal()" ion-fab color="sibleColor"><ion-icon name="ios-car-outline"></ion-icon></button>\n  </ion-fab>\n\n\n</ion-content>\n'/*ion-inline-end:"/Users/john/Documents/GitHub/Sible/src/pages/home/home.html"*/
         }),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_2_ionic_angular__["i" /* NavController */], __WEBPACK_IMPORTED_MODULE_3__ionic_native_geolocation__["a" /* Geolocation */], __WEBPACK_IMPORTED_MODULE_4__ionic_native_toast__["a" /* Toast */], __WEBPACK_IMPORTED_MODULE_2_ionic_angular__["g" /* ModalController */], __WEBPACK_IMPORTED_MODULE_2_ionic_angular__["l" /* ViewController */], __WEBPACK_IMPORTED_MODULE_2_ionic_angular__["k" /* Platform */]])
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_2_ionic_angular__["i" /* NavController */],
+            __WEBPACK_IMPORTED_MODULE_3__ionic_native_geolocation__["a" /* Geolocation */],
+            __WEBPACK_IMPORTED_MODULE_4__ionic_native_toast__["a" /* Toast */],
+            __WEBPACK_IMPORTED_MODULE_6__providers_rest_rest__["a" /* RestProvider */],
+            __WEBPACK_IMPORTED_MODULE_2_ionic_angular__["g" /* ModalController */],
+            __WEBPACK_IMPORTED_MODULE_2_ionic_angular__["m" /* ViewController */],
+            __WEBPACK_IMPORTED_MODULE_2_ionic_angular__["k" /* Platform */]])
     ], HomePage);
     return HomePage;
 }());
@@ -192,71 +231,9 @@ var HomePage = /** @class */ (function () {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AddcardPage; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(13);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__providers_rest_rest__ = __webpack_require__(61);
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-
-
-
-/**
- * Generated class for the AddcardPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
-var AddcardPage = /** @class */ (function () {
-    function AddcardPage(navCtrl, navParams, restProvider) {
-        this.navCtrl = navCtrl;
-        this.navParams = navParams;
-        this.restProvider = restProvider;
-        this.data = {
-            'cardNumber': '',
-            'ExpDate': '',
-            'CVV': '',
-            'Country': ''
-        };
-    }
-    AddcardPage.prototype.ionViewDidLoad = function () {
-        console.log('ionViewDidLoad AddcardPage');
-    };
-    AddcardPage.prototype.addCard = function (data) {
-        console.log('Adding Card details ....');
-        this.restProvider.__addCard(data).then(function (result) {
-            console.log(result);
-        }, function (err) {
-            console.log(err);
-        });
-    };
-    AddcardPage = __decorate([
-        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({
-            selector: 'page-addcard',template:/*ion-inline-start:"/Users/john/Desktop/Desktop/Workspace/sible/src/pages/addcard/addcard.html"*/'\n<ion-header>\n\n  <ion-navbar>\n    <ion-title>addcard</ion-title>\n  </ion-navbar>\n\n</ion-header>\n\n<ion-content padding>\n  <div class="addCardForm padding">\n    <form class="example-form">\n    <mat-form-field class="example-full-width">\n      <ion-icon matPrefix ios="ios-mail" md="md-mail"></ion-icon>\n      <input type="number" matInput placeholder="&#160;Card Number">\n      <!-- [(ngModel)]="data.cardNumber" -->\n    </mat-form-field>\n\n    <table class="example-full-width" cellspacing="0">\n      <tr>\n        <td>\n          <mat-form-field class="example-full-width">\n            <input matInput [matDatepicker]="picker" placeholder="Exp.Date">\n             <!-- [(ngModel)]="data.ExpDate" -->\n            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>\n            <mat-datepicker #picker></mat-datepicker>\n          </mat-form-field>\n        </td>\n        <td>\n          <mat-form-field class="example-full-width">\n            <ion-icon matPrefix ios="ios-mail" md="md-mail"></ion-icon>\n            <input type="number" matInput placeholder="&#160; CVV">\n          </mat-form-field>\n           <!-- [(ngModel)]="data.CVV" -->\n        </td>\n      </tr>\n    </table>\n\n    <mat-form-field class="example-full-width">\n      <ion-icon matPrefix ios="ios-mail" md="md-mail"></ion-icon>\n      <input type="number"matInput placeholder="&#160; Country">\n    </mat-form-field>\n     <!-- [(ngModel)]="data.Country"  -->\n\n    <div class="padding">\n        <button style="border-color: #0e5387;" id="loginButton" (click)="addCard()" ion-button block outline color="light">Save</button>\n    </div>\n</form>\n  </div>\n\n</ion-content>\n'/*ion-inline-end:"/Users/john/Desktop/Desktop/Workspace/sible/src/pages/addcard/addcard.html"*/,
-        }),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* NavController */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* NavParams */], __WEBPACK_IMPORTED_MODULE_2__providers_rest_rest__["a" /* RestProvider */]])
-    ], AddcardPage);
-    return AddcardPage;
-}());
-
-//# sourceMappingURL=addcard.js.map
-
-/***/ }),
-
-/***/ 144:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AddpublisherPage; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(12);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -266,6 +243,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+
 
 
 /**
@@ -275,23 +253,80 @@ var __metadata = (this && this.__metadata) || function (k, v) {
  * Ionic pages and navigation.
  */
 var AddpublisherPage = /** @class */ (function () {
-    function AddpublisherPage(navCtrl, navParams) {
+    function AddpublisherPage(navCtrl, navParams, modalController) {
         this.navCtrl = navCtrl;
         this.navParams = navParams;
+        this.modalController = modalController;
+        // noPublisher: boolean = true;
+        this.Publisher = false;
     }
     AddpublisherPage.prototype.ionViewDidLoad = function () {
         console.log('ionViewDidLoad AddpublisherPage');
     };
+    AddpublisherPage.prototype.addPiblisher = function () {
+        var data = { message: 'hello world' };
+        var modalPage = this.modalController.create('ModalPublisherPage', data);
+        modalPage.present();
+        // setTimeout(function() {
+        this.Publisher = true;
+        // alert('this is my app' );
+        // }, 100);
+    };
     AddpublisherPage = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({
-            selector: 'page-addpublisher',template:/*ion-inline-start:"/Users/john/Desktop/Desktop/Workspace/sible/src/pages/addpublisher/addpublisher.html"*/'<!--\n  Generated template for the AddpublisherPage page.\n\n  See http://ionicframework.com/docs/components/#navigation for more info on\n  Ionic pages and navigation.\n-->\n<ion-header color="sibleColor">\n\n  <ion-navbar color="sibleColor">\n    <ion-title>Publisher</ion-title>\n  </ion-navbar>\n\n</ion-header>\n\n\n<ion-content padding>\n\n</ion-content>\n'/*ion-inline-end:"/Users/john/Desktop/Desktop/Workspace/sible/src/pages/addpublisher/addpublisher.html"*/,
+            selector: 'page-addpublisher',template:/*ion-inline-start:"/Users/john/Documents/GitHub/Sible/src/pages/addpublisher/addpublisher.html"*/'<!--\n  Generated template for the AddpublisherPage page.\n\n  See http://ionicframework.com/docs/components/#navigation for more info on\n  Ionic pages and navigation.\n-->\n<!-- <ion-header> -->\n\n  <!-- <ion-navbar color="sibleColor">\n    <button ion-button menuToggle left>\n      <ion-icon name="menu"></ion-icon>\n    </button>\n    <ion-title>Publisher</ion-title>\n    <button ion-button right>\n      <ion-icon name="plus"></ion-icon>\n    </button>\n  </ion-navbar> -->\n\n\n  <ion-header>\n  <ion-navbar color="sibleColor">\n    <ion-buttons left>\n      <button ion-button menuToggle>\n        <ion-icon name="menu"></ion-icon>\n      </button>\n    </ion-buttons>\n    <ion-title>Publisher</ion-title>\n    <ion-buttons *ngIf="Publisher" right>\n      <button ion-button icon-only  (click)="addPiblisher()" ><ion-icon name="ios-add-circle-outline"></ion-icon></button>\n    </ion-buttons>\n  </ion-navbar>\n</ion-header>\n\n<!-- </ion-header> -->\n\n<style media="screen">\n  .center {\n    position: relative; /* or absolute */\n    top: 15vh;\n    left: 50%;\n    transform: translate(-50%, -50%);\n  }\n</style>\n\n\n<ion-content>\n\n\n<div *ngIf="!Publisher" padding>\n  <img class="center" src="assets/imgs/add-pub.svg" alt="logo" style="width:60vw;">\n  <br>\n  <div class="padding" style="text-align:center;">\n    <button style="border-color: #0e5387;margin:15px 0;border-radius:50px" id="loginButton" (click)="addPiblisher()" ion-button block outline color="light">Become a Publisher</button>\n  </div>\n</div>\n\n<div *ngIf="Publisher">\n  <!-- Sliding item -->\n  <ion-list>\n    <ion-item-divider>\n      Pending Accounts\n    </ion-item-divider>\n\n    <!-- Sliding item -->\n    <ion-item-sliding>\n      <button ion-item>\n        <ion-avatar item-start >\n          <img src="assets/imgs/user_dark.svg">\n        </ion-avatar>\n        Calvin Chou\n        <p>A short bio of calvin</p>\n      </button>\n      <ion-item-options>\n        <button ion-button color="primary" (click)="archive()">Archive</button>\n      </ion-item-options>\n    </ion-item-sliding>\n\n  </ion-list>\n</div>\n\n</ion-content>\n'/*ion-inline-end:"/Users/john/Documents/GitHub/Sible/src/pages/addpublisher/addpublisher.html"*/,
         }),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* NavController */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* NavParams */]])
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* NavController */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* NavParams */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* ModalController */]])
     ], AddpublisherPage);
     return AddpublisherPage;
 }());
 
 //# sourceMappingURL=addpublisher.js.map
+
+/***/ }),
+
+/***/ 144:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return HelpPage; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(12);
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+/**
+ * Generated class for the HelpPage page.
+ *
+ * See https://ionicframework.com/docs/components/#navigation for more info on
+ * Ionic pages and navigation.
+ */
+var HelpPage = /** @class */ (function () {
+    function HelpPage(navCtrl, navParams) {
+        this.navCtrl = navCtrl;
+        this.navParams = navParams;
+    }
+    HelpPage.prototype.ionViewDidLoad = function () {
+        console.log('ionViewDidLoad HelpPage');
+    };
+    HelpPage = __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({
+            selector: 'page-help',template:/*ion-inline-start:"/Users/john/Documents/GitHub/Sible/src/pages/help/help.html"*/'<!--\n  Generated template for the HelpPage page.\n\n  See http://ionicframework.com/docs/components/#navigation for more info on\n  Ionic pages and navigation.\n-->\n<ion-header color="sibleColor">\n\n  <ion-navbar color="sibleColor">\n    <button ion-button menuToggle>\n      <ion-icon name="menu"></ion-icon>\n    </button>\n    <ion-title>Need Help</ion-title>\n  </ion-navbar>\n\n</ion-header>\n<style>\n  .dot{\n    position: inherit;\n    display: inline-block;\n    color: #000;\n    background-color: black;\n    width: 5px;\n    height: 5px;\n    border-radius: 50px;\n    margin-bottom: 0.5vh;\n    margin-left: 0.3vh;\n}\n</style>\n\n<ion-content>\n\n  <ion-item-group>\n    <ion-item-divider color="grayIsh">Your Last Trip</ion-item-divider>\n    <ion-item style="padding-left:50px;"><br>\n      <ion-label>2018/03/17, 15:48   &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;      R27:00 <br><p>Toyota Corolla</p> </ion-label>\n       <p style="display:inline-block;">\n         2018/03/17, 15:48          R27:00</p>\n\n     </ion-item>\n      <p style="display:inline-block;margin-left:10vw">\n        Report an issue with this trip</p>\n    <ion-item-divider (click)="addCard()" color="grayIsh">Additional Topics</ion-item-divider>\n    <ion-item style="padding-left:50px;"><br>\n      <ion-label>No topic for now  </ion-label>\n       <!-- <p style="display:inline-block;">\n         No topic for now</p> -->\n\n     </ion-item><br>\n    <ion-item><a style="color:white">Add Payment Method</a></ion-item>\n    <!-- (click)="addCard()" -->\n  </ion-item-group>\n\n</ion-content>\n'/*ion-inline-end:"/Users/john/Documents/GitHub/Sible/src/pages/help/help.html"*/,
+        }),
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* NavController */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* NavParams */]])
+    ], HelpPage);
+    return HelpPage;
+}());
+
+//# sourceMappingURL=help.js.map
 
 /***/ }),
 
@@ -301,11 +336,11 @@ var AddpublisherPage = /** @class */ (function () {
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ForgotPassPage; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(13);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_forms__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_forms__ = __webpack_require__(13);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__login_login__ = __webpack_require__(41);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__otp_otp__ = __webpack_require__(149);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__providers_rest_rest__ = __webpack_require__(61);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__providers_rest_rest__ = __webpack_require__(54);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -328,11 +363,14 @@ var __metadata = (this && this.__metadata) || function (k, v) {
  * Ionic pages and navigation.
  */
 var ForgotPassPage = /** @class */ (function () {
-    function ForgotPassPage(navCtrl, navParams, restProvider) {
+    function ForgotPassPage(navCtrl, navParams, restProvider, toastCtrl) {
         this.navCtrl = navCtrl;
         this.navParams = navParams;
         this.restProvider = restProvider;
-        this.user = {};
+        this.toastCtrl = toastCtrl;
+        this.user = {
+            'userName': 'khumbuza@gmail.com'
+        };
         this.email = new __WEBPACK_IMPORTED_MODULE_2__angular_forms__["b" /* FormControl */]('', [__WEBPACK_IMPORTED_MODULE_2__angular_forms__["j" /* Validators */].required, __WEBPACK_IMPORTED_MODULE_2__angular_forms__["j" /* Validators */].email]);
         this.hide = true;
     }
@@ -345,11 +383,16 @@ var ForgotPassPage = /** @class */ (function () {
     };
     ForgotPassPage.prototype.ForgotPassword = function () {
         var _this = this;
-        if (this.user.email !== null && this.user.email !== "") {
-            localStorage.forPassEmail = this.user.email;
-            this.restProvider.__registration(this.user).then(function (result) {
+        if (this.user.userName !== null && this.user.userName !== "") {
+            localStorage.forPassEmail = this.user.userName;
+            console.log('heres what we sending : ' + JSON.stringify(this.user));
+            var userData = JSON.stringify(this.user);
+            this.restProvider.__resetPassoword(userData).then(function (result) {
                 console.log(result);
                 console.log('going to the OTP page');
+                // if(result.ResultCode == -1){
+                //   this.errorForgot();
+                // }
                 _this.navCtrl.push(__WEBPACK_IMPORTED_MODULE_4__otp_otp__["a" /* OtpPage */]);
             }, function (err) {
                 console.log(err);
@@ -360,15 +403,24 @@ var ForgotPassPage = /** @class */ (function () {
             alert('Please enter your email');
         }
     };
+    ForgotPassPage.prototype.errorForgot = function () {
+        // this.favorite = true;
+        var toast = this.toastCtrl.create({
+            message: this.user.email + " does not exit",
+            duration: 2000
+        });
+        toast.present();
+        // this.user = null;
+    };
     ForgotPassPage.prototype.goToLogin = function () {
         console.log('going back to login');
         this.navCtrl.push(__WEBPACK_IMPORTED_MODULE_3__login_login__["a" /* LoginPage */]);
     };
     ForgotPassPage = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({
-            selector: 'page-forgot-pass',template:/*ion-inline-start:"/Users/john/Desktop/Desktop/Workspace/sible/src/pages/forgot-pass/forgot-pass.html"*/'<!--\n  Generated template for the ForgotPassPage page.\n\n  See http://ionicframework.com/docs/components/#navigation for more info on\n  Ionic pages and navigation.\n-->\n<ion-content padding style="background-image: url(\'assets/imgs/bg.png\');background-size:cover">\n<br><br>\n<div class="logos">\n  <img src="assets/imgs/logo.png" alt="logo" style="width:55%;margin-left:77px;margin-top:54px">\n</div>\n<br>\n  <div class="LoginForm padding">\n\n    <mat-form-field>\n      <ion-icon matPrefix ios="ios-mail" md="md-mail"></ion-icon>\n      <input matInput placeholder=" &#160; Enter your email" [formControl]="email" required [(ngModel)]="user.email">\n      <mat-error *ngIf="email.invalid">{{getErrorMessage()}}</mat-error>\n    </mat-form-field>\n\n    <br><br>\n\n    <div class="padding">\n      <button style="border-color: #0e5387;margin-top:15px;margin-bottom:15px" id="loginButton" (click)="ForgotPassword()" ion-button block outline color="light">Send</button>\n  </div>\n  <span (click)="goToLogin()" style="color:#4b4b4b;text-align:center">Remember your password ? <b style="color:#318ebc;">Login</b></span>\n  </div>\n\n</ion-content>\n<ion-footer style="text-align:center">\n</ion-footer>\n'/*ion-inline-end:"/Users/john/Desktop/Desktop/Workspace/sible/src/pages/forgot-pass/forgot-pass.html"*/,
+            selector: 'page-forgot-pass',template:/*ion-inline-start:"/Users/john/Documents/GitHub/Sible/src/pages/forgot-pass/forgot-pass.html"*/'<!--\n  Generated template for the ForgotPassPage page.\n\n  See http://ionicframework.com/docs/components/#navigation for more info on\n  Ionic pages and navigation.\n-->\n<ion-content padding style="background-image: url(\'assets/imgs/bg.png\');background-size:cover">\n<br><br>\n<div class="logos">\n  <img src="assets/imgs/logo.png" alt="logo" style="width:55%;margin-left:77px;margin-top:54px">\n</div>\n<br>\n  <div class="LoginForm padding">\n\n    <mat-form-field>\n      <ion-icon matPrefix ios="ios-mail" md="md-mail"></ion-icon>\n      <input matInput placeholder=" &#160; Enter your email" [formControl]="email" required [(ngModel)]="user.userName">\n      <mat-error *ngIf="email.invalid">{{getErrorMessage()}}</mat-error>\n    </mat-form-field>\n\n    <br><br>\n\n    <div class="padding">\n      <button style="border-color: #0e5387;margin-top:15px;margin-bottom:15px" id="loginButton" (click)="ForgotPassword()" ion-button block outline color="light">Send</button>\n  </div>\n  <span (click)="goToLogin()" style="color:#4b4b4b;text-align:center">Remember your password ? <b style="color:#318ebc;">Login</b></span>\n  </div>\n\n</ion-content>\n<ion-footer style="text-align:center">\n</ion-footer>\n'/*ion-inline-end:"/Users/john/Documents/GitHub/Sible/src/pages/forgot-pass/forgot-pass.html"*/,
         }),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* NavController */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* NavParams */], __WEBPACK_IMPORTED_MODULE_5__providers_rest_rest__["a" /* RestProvider */]])
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* NavController */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* NavParams */], __WEBPACK_IMPORTED_MODULE_5__providers_rest_rest__["a" /* RestProvider */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["l" /* ToastController */]])
     ], ForgotPassPage);
     return ForgotPassPage;
 }());
@@ -383,7 +435,7 @@ var ForgotPassPage = /** @class */ (function () {
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return SignupPage; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(12);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__pages_login_login__ = __webpack_require__(41);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__pages_signuplicence_signuplicence__ = __webpack_require__(147);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -399,6 +451,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
+// import { NativeDateAdapter } from "@angular/material";
 // import { File } from '@ionic-native/file';
 // import { Transfer, TransferObject } from '@ionic-native/transfer';
 // import { FilePath } from '@ionic-native/file-path';
@@ -412,17 +465,18 @@ var SignupPage = /** @class */ (function () {
         this.navCtrl = navCtrl;
         this.navParams = navParams;
         this.user = {
-            'firstname': '',
-            'lastname': '',
-            'identityNumber': '',
-            'dateOfBirth': '',
-            'password': ''
+            'firstname': 'Thabo',
+            'lastname': 'Sizwe',
+            'identityNumber': '91030205252082',
+            'dateOfBirth': '1/1/1991',
+            'password': '111111111'
         };
     }
     SignupPage.prototype.ionViewDidLoad = function () {
         console.log('ionViewDidLoad SignupPage');
     };
     SignupPage.prototype.tempFunction = function () {
+        console.log('DOB ' + this.user.dateOfBirth);
         this.navCtrl.push(__WEBPACK_IMPORTED_MODULE_3__pages_signuplicence_signuplicence__["a" /* SignuplicencePage */]);
         console.log('Go to licencePage page function');
     };
@@ -442,7 +496,7 @@ var SignupPage = /** @class */ (function () {
                             localStorage.dateOfBirth = this.user.dateOfBirth;
                             console.log('Local storge dateOfBirth => ' + localStorage.dateOfBirth);
                             if (this.user.password !== null && this.user.password !== '') {
-                                if (this.user.password.length >= 8) {
+                                if (this.user.password.length > 7) {
                                     localStorage.password = this.user.password;
                                     console.log('Local storge id password => ' + localStorage.password);
                                     this.navCtrl.push(__WEBPACK_IMPORTED_MODULE_3__pages_signuplicence_signuplicence__["a" /* SignuplicencePage */]);
@@ -482,7 +536,7 @@ var SignupPage = /** @class */ (function () {
     };
     SignupPage = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({
-            selector: 'page-signup',template:/*ion-inline-start:"/Users/john/Desktop/Desktop/Workspace/sible/src/pages/signup/signup.html"*/'<ion-content padding style="background-color:#ebebeb;">\n\n  <!-- <div class="logos">\n\n    <div style="height:70px">\n\n\n\n    </div>\n\n    <!-- <img src="assets/imgs/logo.png" alt="logo" style="width:45%;margin-left:77px;margin-top:20px;height:110px"> --\n\n  </div> -->\n\n\n\n  <div class="LoginForm padding">\n\n    <h1 style="text-align:center">SignUp</h1>\n\n\n\n    <mat-form-field class="example-full-width">\n\n      <input matInput [(ngModel)]="user.firstname" placeholder="Full names" name="firstname" required>\n\n    </mat-form-field>\n\n\n\n    <mat-form-field class="example-full-width">\n\n      <input matInput [(ngModel)]="user.lastname" placeholder="Surname" name="lastname" required>\n\n    </mat-form-field>\n\n\n\n    <mat-form-field class="example-full-width">\n\n      <input matInput [(ngModel)]="user.identityNumber" placeholder="ID Number" name="identityNumber" required>\n\n    </mat-form-field>\n\n\n\n    <!-- <mat-form-field class="example-full-width">\n\n      <input matInput [(ngModel)]="user.dateOfBirth" placeholder="Date of birth" name="dateOfBirth" required type="date">\n\n    </mat-form-field> -->\n\n\n\n    <mat-form-field class="example-full-width">\n\n      <input matInput [matDatepicker]="picker" [(ngModel)]="user.dateOfBirth" placeholder="Date of birth">\n\n      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>\n\n      <mat-datepicker #picker></mat-datepicker>\n\n    </mat-form-field>\n\n\n\n\n\n    <mat-form-field class="example-full-width">\n\n      <input matInput [(ngModel)]="user.password" placeholder="  &#160; Create your password" [type]="hide ? \'password\' : \'text\'"  name="password">\n\n      <mat-icon matSuffix (click)="hide = !hide">{{hide ? \'visibility\' : \'visibility_off\'}}</mat-icon>\n\n    </mat-form-field>\n\n    <!--<br>-->\n\n    <div class="padding">\n\n      <!-- <button style="border-color: #0e5387;" id="loginButton" (click)="continue()" ion-button block outline color="light">Continue</button> -->\n\n      <button style="border-color: #0e5387;" id="loginButton" (click)="tempFunction()" ion-button block outline color="light">Continue</button>\n\n\n\n    </div>\n\n    <span (click)="backToLogin()" style="color:#4b4b4b;margin-top:15px;text-align:center;">Already have an account ? <b style="color:#318ebc;">Login</b></span>\n\n\n\n  </div>\n\n\n\n</ion-content>\n\n'/*ion-inline-end:"/Users/john/Desktop/Desktop/Workspace/sible/src/pages/signup/signup.html"*/,
+            selector: 'page-signup',template:/*ion-inline-start:"/Users/john/Documents/GitHub/Sible/src/pages/signup/signup.html"*/'<ion-content padding style="background-color:#ebebeb;">\n\n  <!-- <div class="logos">\n\n    <div style="height:70px">\n\n\n\n    </div>\n\n    <!-- <img src="assets/imgs/logo.png" alt="logo" style="width:45%;margin-left:77px;margin-top:20px;height:110px"> --\n\n  </div> -->\n\n\n\n  <div class="LoginForm padding">\n\n    <h1 style="text-align:center">SignUp</h1>\n\n\n\n    <mat-form-field class="example-full-width">\n\n      <input matInput [(ngModel)]="user.firstname" placeholder="Full names" name="firstname" required>\n\n    </mat-form-field>\n\n\n\n    <mat-form-field class="example-full-width">\n\n      <input matInput [(ngModel)]="user.lastname" placeholder="Surname" name="lastname" required>\n\n    </mat-form-field>\n\n\n\n    <mat-form-field class="example-full-width">\n\n      <input matInput [(ngModel)]="user.identityNumber" placeholder="ID Number" name="identityNumber" required>\n\n    </mat-form-field>\n\n\n\n    <!-- <mat-form-field class="example-full-width">\n\n      <input matInput [(ngModel)]="user.dateOfBirth" placeholder="Date of birth" name="dateOfBirth" required type="date">\n\n    </mat-form-field> -->\n\n\n\n    <mat-form-field class="example-full-width">\n\n      <input matInput [matDatepicker]="picker" [(ngModel)]="user.dateOfBirth" placeholder="Date of birth">\n\n      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>\n\n      <mat-datepicker #picker></mat-datepicker>\n\n    </mat-form-field>\n\n\n\n\n\n    <mat-form-field class="example-full-width">\n\n      <input matInput [(ngModel)]="user.password" placeholder="  &#160; Create your password" [type]="hide ? \'password\' : \'text\'"  name="password">\n\n      <mat-icon matSuffix (click)="hide = !hide">{{hide ? \'visibility\' : \'visibility_off\'}}</mat-icon>\n\n    </mat-form-field>\n\n    <!--<br>-->\n\n    <div class="padding">\n\n      <!-- <button style="border-color: #0e5387;" id="loginButton" (click)="continue()" ion-button block outline color="light">Continue</button> -->\n\n      <button style="border-color: #0e5387;" id="loginButton" (click)="tempFunction()" ion-button block outline color="light">Continue</button>\n\n\n\n    </div>\n\n    <span (click)="backToLogin()" style="color:#4b4b4b;margin-top:15px;text-align:center;">Already have an account ? <b style="color:#318ebc;">Login</b></span>\n\n\n\n  </div>\n\n\n\n</ion-content>\n\n'/*ion-inline-end:"/Users/john/Documents/GitHub/Sible/src/pages/signup/signup.html"*/,
         }),
         __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* NavController */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* NavParams */]])
     ], SignupPage);
@@ -499,10 +553,10 @@ var SignupPage = /** @class */ (function () {
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return SignuplicencePage; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(12);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__pages_login_login__ = __webpack_require__(41);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__pages_signupcontact_signupcontact__ = __webpack_require__(148);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__providers_rest_rest__ = __webpack_require__(61);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__providers_rest_rest__ = __webpack_require__(54);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -517,21 +571,50 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
+//
+// import {FormControl} from '@angular/forms';
+// import {MomentDateAdapter} from '@angular/material-moment-adapter';
+// import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE} from '@angular/material/core';
+//
+// // Depending on whether rollup is used, moment needs to be imported differently.
+// // Since Moment.js doesn't have a default export, we normally need to import using the `* as`
+// // syntax. However, rollup creates a synthetic default module and we thus need to import it using
+// // the `default as` syntax.
+// import * as _moment from 'moment';
+// // tslint:disable-next-line:no-duplicate-imports
+// import {default as _rollupMoment} from 'moment';
+//
+// const moment = _rollupMoment || _moment;
+//
+// // See the Moment.js docs for the meaning of these formats:
+// // https://momentjs.com/docs/#/displaying/format/
+// export const MY_FORMATS = {
+//   parse: {
+//     dateInput: 'LL',
+//   },
+//   display: {
+//     dateInput: 'LL',
+//     monthYearLabel: 'MMM YYYY',
+//     dateA11yLabel: 'LL',
+//     monthYearA11yLabel: 'MMMM YYYY',
+//   },
+// };
 var SignuplicencePage = /** @class */ (function () {
     function SignuplicencePage(navCtrl, navParams, restProvider) {
         this.navCtrl = navCtrl;
         this.navParams = navParams;
         this.restProvider = restProvider;
+        // date = new FormControl(moment());
         this.user = {
             'firstname': '',
             'lastname': '',
             'identityNumber': '',
             'dateOfBirth': '',
             'password': '',
-            'contact': '',
+            'contact': '0662144190',
             'email': '',
-            'driversLinsence': '',
-            'driversLinsenceExpiry': ''
+            'driversLinsence': '87654678987654',
+            'driversLinsenceExpiry': '1/1/2020'
         };
         this.user.firstname = localStorage.firstname;
         this.user.lastname = localStorage.lastname;
@@ -541,6 +624,7 @@ var SignuplicencePage = /** @class */ (function () {
     }
     SignuplicencePage.prototype.ionViewDidLoad = function () {
         console.log('ionViewDidLoad SignuplicencePage');
+        console.log(this.user);
     };
     SignuplicencePage.prototype.backToLogin = function () {
         console.log('Go to signup page function');
@@ -558,12 +642,19 @@ var SignuplicencePage = /** @class */ (function () {
             console.log(err);
         });
     };
+    // validateEmail() {
+    //     var email = this.user.email;
+    //     var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    //     return re.test(String(email).toLowerCase());
+    // }
     SignuplicencePage.prototype.continue = function () {
         var _this = this;
         if (this.user.contact !== null && this.user.contact !== '') {
             localStorage.contact = this.user.contact;
             console.log('Local storge contact => ' + localStorage.contact);
             if (this.user.email !== null && this.user.email !== '') {
+                // var email = this.user.email;
+                // if(validateEmail()){
                 localStorage.email = this.user.email;
                 console.log('Local storge email => ' + localStorage.email);
                 if (this.user.driversLinsence !== null && this.user.driversLinsence !== '') {
@@ -572,9 +663,10 @@ var SignuplicencePage = /** @class */ (function () {
                     if (this.user.driversLinsenceExpiry !== null && this.user.driversLinsenceExpiry !== '') {
                         localStorage.driversLinsenceExpiry = this.user.driversLinsenceExpiry;
                         console.log('this is localStorage lisence expiration data => ' + localStorage.driversLinsenceExpiry);
-                        var UserData = JSON.stringify(this.user);
-                        console.log('Data => ' + UserData);
-                        this.restProvider.__registration(UserData).then(function (result) {
+                        console.log('this is the data before stringify ' + this.user);
+                        // let UserData = JSON.stringify(this.user);
+                        console.log('Data => ' + this.user);
+                        this.restProvider.__registration(this.user).then(function (result) {
                             console.log(result);
                             console.log('going to another page ');
                             _this.navCtrl.push(__WEBPACK_IMPORTED_MODULE_3__pages_signupcontact_signupcontact__["a" /* SignupcontactPage */]);
@@ -590,6 +682,7 @@ var SignuplicencePage = /** @class */ (function () {
                 else {
                     alert('Please enter your licence number');
                 }
+                // }else{alert('Please enter a valid email a@b.com')}
             }
             else {
                 alert('Please enter yourf email');
@@ -601,7 +694,7 @@ var SignuplicencePage = /** @class */ (function () {
     };
     SignuplicencePage = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({
-            selector: 'page-signuplicence',template:/*ion-inline-start:"/Users/john/Desktop/Desktop/Workspace/sible/src/pages/signuplicence/signuplicence.html"*/'<ion-content padding style="background-color:#ebebeb;">\n  <!-- <div class="logos">\n    <img src="assets/imgs/logo.png" alt="logo" style="width:55%;margin-left:77px;margin-top:20px">\n  </div> -->\n  <div class="LoginForm padding">\n    <h1 style="text-align:center">SignUp</h1>\n\n    <mat-form-field class="example-full-width">\n      <!-- <ion-icon matPrefix ios="ios-mail" md="md-mail"></ion-icon> -->\n      <input type="number" [(ngModel)]="user.contact" matInput placeholder="Number Phone" name="contact" required>\n    </mat-form-field>\n\n    <mat-form-field class="example-full-width">\n      <!-- <ion-icon matPrefix ios="ios-mail" md="md-mail"></ion-icon> -->\n      <input matInput [(ngModel)]="user.email" placeholder="Email Address" name="email" required>\n    </mat-form-field>\n\n    <mat-form-field class="example-full-width">\n      <input matInput [(ngModel)]="user.driversLinsence" placeholder="Driver\'s Licence Number" type="number">\n    </mat-form-field>\n\n    <mat-form-field class="example-full-width">\n      <input matInput [matDatepicker]="picker" [(ngModel)]="user.driversLinsenceExpiry" placeholder="Licence Expiery Date">\n      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>\n      <mat-datepicker #picker></mat-datepicker>\n    </mat-form-field>\n\n\n\n\n\n\n\n    <br><br>\n    <div class="padding">\n      <button style="border-color: #0e5387;" id="loginButton" (click)="continue()" ion-button block outline color="light">Continue</button>\n      <!-- <button style="border-color: #0e5387;" id="loginButton" (click)="tempFinc()" ion-button block outline color="light">Continue</button> -->\n\n  </div>\n  <span (click)="backToLogin()" style="color:#4b4b4b;text-align:center;margin-top:15px;">Already have an account ? <b style="color:#318ebc;">Login</b></span>\n\n  </div>\n\n</ion-content>\n'/*ion-inline-end:"/Users/john/Desktop/Desktop/Workspace/sible/src/pages/signuplicence/signuplicence.html"*/,
+            selector: 'page-signuplicence',template:/*ion-inline-start:"/Users/john/Documents/GitHub/Sible/src/pages/signuplicence/signuplicence.html"*/'<ion-content padding style="background-color:#ebebeb;">\n  <!-- <div class="logos">\n    <img src="assets/imgs/logo.png" alt="logo" style="width:55%;margin-left:77px;margin-top:20px">\n  </div> -->\n  <div class="LoginForm padding">\n    <h1 style="text-align:center">SignUp</h1>\n\n    <mat-form-field class="example-full-width">\n      <!-- <ion-icon matPrefix ios="ios-mail" md="md-mail"></ion-icon> -->\n      <input type="number" [(ngModel)]="user.contact" matInput placeholder="Number Phone" name="contact" required>\n    </mat-form-field>\n\n    <mat-form-field class="example-full-width">\n      <!-- <ion-icon matPrefix ios="ios-mail" md="md-mail"></ion-icon> -->\n      <input matInput [(ngModel)]="user.email" placeholder="Email Address" name="email" required>\n    </mat-form-field>\n\n    <mat-form-field class="example-full-width">\n      <input matInput [(ngModel)]="user.driversLinsence" placeholder="Driver\'s Licence Number" type="number">\n    </mat-form-field>\n\n    <mat-form-field class="example-full-width">\n      <input matInput [matDatepicker]="picker" [(ngModel)]="user.driversLinsenceExpiry" placeholder="Licence Expiery Date">\n      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>\n      <mat-datepicker #picker></mat-datepicker>\n    </mat-form-field>\n\n\n    <mat-form-field>\n  <input matInput [matDatepicker]="dp" placeholder="Verbose datepicker" [formControl]="date">\n  <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>\n  <mat-datepicker #dp></mat-datepicker>\n</mat-form-field>\n\n\n\n\n\n\n\n    <br><br>\n    <div class="padding">\n      <button style="border-color: #0e5387;" id="loginButton" (click)="continue()" ion-button block outline color="light">Continue</button>\n      <!-- <button style="border-color: #0e5387;" id="loginButton" (click)="tempFinc()" ion-button block outline color="light">Continue</button> -->\n\n  </div>\n  <span (click)="backToLogin()" style="color:#4b4b4b;text-align:center;margin-top:15px;">Already have an account ? <b style="color:#318ebc;">Login</b></span>\n\n  </div>\n\n</ion-content>\n'/*ion-inline-end:"/Users/john/Documents/GitHub/Sible/src/pages/signuplicence/signuplicence.html"*/,
         }),
         __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* NavController */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* NavParams */], __WEBPACK_IMPORTED_MODULE_4__providers_rest_rest__["a" /* RestProvider */]])
     ], SignuplicencePage);
@@ -618,9 +711,9 @@ var SignuplicencePage = /** @class */ (function () {
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return SignupcontactPage; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(12);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__pages_login_login__ = __webpack_require__(41);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__providers_rest_rest__ = __webpack_require__(61);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__providers_rest_rest__ = __webpack_require__(54);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -639,16 +732,24 @@ var SignupcontactPage = /** @class */ (function () {
         this.navCtrl = navCtrl;
         this.navParams = navParams;
         this.restProvider = restProvider;
+        this.user = {
+            "userName": "calvin@gmail.com",
+            "otp": "747473"
+        };
     }
     SignupcontactPage.prototype.ionViewDidLoad = function () {
         console.log('ionViewDidLoad SignupcontactPage');
+        // this.user.userName = localStorage.email
+        // this.activateUser();
+        console.log(this.user);
     };
     SignupcontactPage.prototype.activateUser = function () {
         var _this = this;
         console.log('function called .... waiting the api response');
-        if (this.OTP !== null && this.OTP !== '') {
-            var otp = JSON.stringify(this.OTP);
-            this.restProvider.__activateUser(otp).then(function (result) {
+        console.log(this.user);
+        if (this.user.otp !== null && this.user.otp !== '') {
+            // let otp = JSON.stringify(this.OTP);
+            this.restProvider.__activateUser(this.user).then(function (result) {
                 console.log(result);
                 console.log('going to another login page ');
                 _this.navCtrl.push(__WEBPACK_IMPORTED_MODULE_2__pages_login_login__["a" /* LoginPage */]);
@@ -662,7 +763,7 @@ var SignupcontactPage = /** @class */ (function () {
     };
     SignupcontactPage = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({
-            selector: 'page-signupcontact',template:/*ion-inline-start:"/Users/john/Desktop/Desktop/Workspace/sible/src/pages/signupcontact/signupcontact.html"*/'<ion-content padding style="background-color:#ebebeb;">\n  <div class="logos">\n    <img src="assets/imgs/logo.png" alt="logo" style="width:55%;margin-left:77px;margin-top:20px">\n  </div>\n\n  <div class="LoginForm padding">\n    <mat-form-field class="example-full-width">\n      <ion-icon matPrefix ios="ios-mail" md="md-mail"></ion-icon>\n      <input [(ngModel)]="OTP" matInput placeholder="&#160;Enter Your OTP">\n    </mat-form-field>\n    <br><br>\n  <div class="padding">\n      <button style="border-color: #0e5387;" id="loginButton" (click)="activateUser()" ion-button block outline color="light">Activate</button>\n  </div>\n  </div>\n\n</ion-content>\n'/*ion-inline-end:"/Users/john/Desktop/Desktop/Workspace/sible/src/pages/signupcontact/signupcontact.html"*/,
+            selector: 'page-signupcontact',template:/*ion-inline-start:"/Users/john/Documents/GitHub/Sible/src/pages/signupcontact/signupcontact.html"*/'<ion-content padding style="background-color:#ebebeb;">\n  <div class="logos">\n    <img src="assets/imgs/logo.png" alt="logo" style="width:55%;margin-left:77px;margin-top:20px">\n  </div>\n\n  <div class="LoginForm padding">\n    <mat-form-field class="example-full-width">\n      <ion-icon matPrefix ios="ios-mail" md="md-mail"></ion-icon>\n      <input [(ngModel)]="user.otp" matInput placeholder="&#160;Enter Your OTP">\n    </mat-form-field>\n    <br><br>\n  <div class="padding">\n      <button style="border-color: #0e5387;" id="loginButton" (click)="activateUser()" ion-button block outline color="light">Activate</button>\n  </div>\n  </div>\n\n</ion-content>\n'/*ion-inline-end:"/Users/john/Documents/GitHub/Sible/src/pages/signupcontact/signupcontact.html"*/,
         }),
         __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* NavController */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* NavParams */], __WEBPACK_IMPORTED_MODULE_3__providers_rest_rest__["a" /* RestProvider */]])
     ], SignupcontactPage);
@@ -679,7 +780,7 @@ var SignupcontactPage = /** @class */ (function () {
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return OtpPage; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(12);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__login_login__ = __webpack_require__(41);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__reset_reset__ = __webpack_require__(150);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -721,7 +822,7 @@ var OtpPage = /** @class */ (function () {
     };
     OtpPage = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({
-            selector: 'page-otp',template:/*ion-inline-start:"/Users/john/Desktop/Desktop/Workspace/sible/src/pages/otp/otp.html"*/'<!--\n  Generated template for the OtpPage page.\n\n  See http://ionicframework.com/docs/components/#navigation for more info on\n  Ionic pages and navigation.\n-->\n<ion-content padding style="background-image: url(\'assets/imgs/bg.png\');background-size:cover">\n<br><br>\n<div class="logos">\n  <img src="assets/imgs/logo.png" alt="logo" style="width:55%;margin-left:77px;margin-top:54px">\n</div>\n<br>\n  <div class="LoginForm padding">\n\n    <mat-form-field class="example-full-width">\n      <ion-icon matPrefix ios="ios-mail" md="md-mail"></ion-icon>\n      <input type="number" matInput placeholder="&#160; Enter OTP">\n    </mat-form-field>\n\n    <br><br>\n\n    <div class="padding">\n      <button style="border-color: #0e5387;" id="loginButton" (click)="continue()" ion-button block outline color="light">Continue</button>\n  </div>\n\n  </div>\n\n</ion-content>\n<ion-footer style="text-align:center">\n    <span (click)="goBackToLogin()" style="color:#4b4b4b;">Remember your password ? <b style="color:#318ebc;">Login</b></span>\n</ion-footer>\n'/*ion-inline-end:"/Users/john/Desktop/Desktop/Workspace/sible/src/pages/otp/otp.html"*/,
+            selector: 'page-otp',template:/*ion-inline-start:"/Users/john/Documents/GitHub/Sible/src/pages/otp/otp.html"*/'<!--\n  Generated template for the OtpPage page.\n\n  See http://ionicframework.com/docs/components/#navigation for more info on\n  Ionic pages and navigation.\n-->\n<ion-content padding style="background-image: url(\'assets/imgs/bg.png\');background-size:cover">\n<br><br>\n<div class="logos">\n  <img src="assets/imgs/logo.png" alt="logo" style="width:55%;margin-left:77px;margin-top:54px">\n</div>\n<br>\n  <div class="LoginForm padding">\n\n    <mat-form-field class="example-full-width">\n      <ion-icon matPrefix ios="ios-mail" md="md-mail"></ion-icon>\n      <input type="number" matInput placeholder="&#160; Enter OTP">\n    </mat-form-field>\n\n    <br><br>\n\n    <div class="padding">\n      <button style="border-color: #0e5387;" id="loginButton" (click)="continue()" ion-button block outline color="light">Continue</button>\n  </div>\n\n  </div>\n\n</ion-content>\n<ion-footer style="text-align:center">\n    <span (click)="goBackToLogin()" style="color:#4b4b4b;">Remember your password ? <b style="color:#318ebc;">Login</b></span>\n</ion-footer>\n'/*ion-inline-end:"/Users/john/Documents/GitHub/Sible/src/pages/otp/otp.html"*/,
         }),
         __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* NavController */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* NavParams */]])
     ], OtpPage);
@@ -738,7 +839,7 @@ var OtpPage = /** @class */ (function () {
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ResetPage; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(12);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__login_login__ = __webpack_require__(41);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -774,7 +875,7 @@ var ResetPage = /** @class */ (function () {
     };
     ResetPage = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({
-            selector: 'page-reset',template:/*ion-inline-start:"/Users/john/Desktop/Desktop/Workspace/sible/src/pages/reset/reset.html"*/'<!--\n  Generated template for the ResetPage page.\n\n  See http://ionicframework.com/docs/components/#navigation for more info on\n  Ionic pages and navigation.\n-->\n<ion-content padding style="background-image: url(\'assets/imgs/bg.png\');background-size:cover">\n<br><br>\n<div class="logos">\n  <img src="assets/imgs/logo.png" alt="logo" style="width:55%;margin-left:77px;margin-top:54px">\n</div>\n<br>\n  <div class="LoginForm padding">\n\n    <mat-form-field>\n      <ion-icon matPrefix ios="ios-unlock" md="md-unlock"></ion-icon>\n      <input matInput placeholder="  &#160; Enter your password" [type]="hide ? \'password\' : \'text\'" [(ngModel)]="user.password">\n      <mat-icon matSuffix (click)="hide = !hide">{{hide ? \'visibility\' : \'visibility_off\'}}</mat-icon>\n    </mat-form-field>\n\n\n    <mat-form-field>\n      <ion-icon matPrefix ios="ios-unlock" md="md-unlock"></ion-icon>\n      <input matInput placeholder="  &#160; Confirm your password" [type]="hide ? \'password\' : \'text\'" [(ngModel)]="user.password">\n      <mat-icon matSuffix (click)="hide = !hide">{{hide ? \'visibility\' : \'visibility_off\'}}</mat-icon>\n    </mat-form-field>\n\n    <br><br>\n\n    <div class="padding">\n      <button style="border-color: #0e5387;" id="loginButton" (click)="goBackToLogin()" ion-button block outline color="light">Log in</button>\n  </div>\n  </div>\n\n</ion-content>\n'/*ion-inline-end:"/Users/john/Desktop/Desktop/Workspace/sible/src/pages/reset/reset.html"*/,
+            selector: 'page-reset',template:/*ion-inline-start:"/Users/john/Documents/GitHub/Sible/src/pages/reset/reset.html"*/'<!--\n  Generated template for the ResetPage page.\n\n  See http://ionicframework.com/docs/components/#navigation for more info on\n  Ionic pages and navigation.\n-->\n<ion-content padding style="background-image: url(\'assets/imgs/bg.png\');background-size:cover">\n<br><br>\n<div class="logos">\n  <img src="assets/imgs/logo.png" alt="logo" style="width:55%;margin-left:77px;margin-top:54px">\n</div>\n<br>\n  <div class="LoginForm padding">\n\n    <mat-form-field>\n      <ion-icon matPrefix ios="ios-unlock" md="md-unlock"></ion-icon>\n      <input matInput placeholder="  &#160; Enter your password" [type]="hide ? \'password\' : \'text\'" [(ngModel)]="user.password">\n      <mat-icon matSuffix (click)="hide = !hide">{{hide ? \'visibility\' : \'visibility_off\'}}</mat-icon>\n    </mat-form-field>\n\n\n    <mat-form-field>\n      <ion-icon matPrefix ios="ios-unlock" md="md-unlock"></ion-icon>\n      <input matInput placeholder="  &#160; Confirm your password" [type]="hide ? \'password\' : \'text\'" [(ngModel)]="user.password">\n      <mat-icon matSuffix (click)="hide = !hide">{{hide ? \'visibility\' : \'visibility_off\'}}</mat-icon>\n    </mat-form-field>\n\n    <br><br>\n\n    <div class="padding">\n      <button style="border-color: #0e5387;" id="loginButton" (click)="goBackToLogin()" ion-button block outline color="light">Log in</button>\n  </div>\n  </div>\n\n</ion-content>\n'/*ion-inline-end:"/Users/john/Documents/GitHub/Sible/src/pages/reset/reset.html"*/,
         }),
         __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* NavController */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* NavParams */]])
     ], ResetPage);
@@ -786,51 +887,6 @@ var ResetPage = /** @class */ (function () {
 /***/ }),
 
 /***/ 151:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return HelpPage; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(13);
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-
-
-/**
- * Generated class for the HelpPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
-var HelpPage = /** @class */ (function () {
-    function HelpPage(navCtrl, navParams) {
-        this.navCtrl = navCtrl;
-        this.navParams = navParams;
-    }
-    HelpPage.prototype.ionViewDidLoad = function () {
-        console.log('ionViewDidLoad HelpPage');
-    };
-    HelpPage = __decorate([
-        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({
-            selector: 'page-help',template:/*ion-inline-start:"/Users/john/Desktop/Desktop/Workspace/sible/src/pages/help/help.html"*/'<!--\n  Generated template for the HelpPage page.\n\n  See http://ionicframework.com/docs/components/#navigation for more info on\n  Ionic pages and navigation.\n-->\n<ion-header color="sibleColor">\n\n  <ion-navbar color="sibleColor">\n    <ion-title>Need Help</ion-title>\n  </ion-navbar>\n\n</ion-header>\n\n\n<ion-content padding>\n\n</ion-content>\n'/*ion-inline-end:"/Users/john/Desktop/Desktop/Workspace/sible/src/pages/help/help.html"*/,
-        }),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* NavController */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* NavParams */]])
-    ], HelpPage);
-    return HelpPage;
-}());
-
-//# sourceMappingURL=help.js.map
-
-/***/ }),
-
-/***/ 152:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -865,7 +921,7 @@ var LegalPage = /** @class */ (function () {
     };
     LegalPage = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({
-            selector: 'page-legal',template:/*ion-inline-start:"/Users/john/Desktop/Desktop/Workspace/sible/src/pages/legal/legal.html"*/'<!--\n  Generated template for the LegalPage page.\n\n  See http://ionicframework.com/docs/components/#navigation for more info on\n  Ionic pages and navigation.\n-->\n<ion-header color="sibleColor">\n	\n	<ion-navbar color="sibleColor">\n	<ion-buttons start>\n	  <button ion-button icon-only color="white">\n	    <ion-icon name="md-arrow-back"></ion-icon>\n	  </button>\n	</ion-buttons>\n	<ion-title color="light">Legal</ion-title>\n	</ion-navbar>\n\n</ion-header>\n\n<ion-content>\n	<ion-list>\n	  <button ion-item *ngFor="let item of items" (click)="itemSelected(item)">\n	    {{ item }}\n	  </button>  \n	</ion-list>\n</ion-content>\n'/*ion-inline-end:"/Users/john/Desktop/Desktop/Workspace/sible/src/pages/legal/legal.html"*/,
+            selector: 'page-legal',template:/*ion-inline-start:"/Users/john/Documents/GitHub/Sible/src/pages/legal/legal.html"*/'<!--\n  Generated template for the LegalPage page.\n\n  See http://ionicframework.com/docs/components/#navigation for more info on\n  Ionic pages and navigation.\n-->\n<ion-header color="sibleColor">\n\n	<ion-navbar color="sibleColor">\n		<button ion-button menuToggle>\n			<ion-icon name="menu"></ion-icon>\n		</button>\n	<ion-title color="light">Legal</ion-title>\n	</ion-navbar>\n\n</ion-header>\n\n<ion-content>\n	<ion-list>\n	  <button ion-item *ngFor="let item of items" (click)="itemSelected(item)">\n	    {{ item }}\n	  </button>\n	</ion-list>\n</ion-content>\n'/*ion-inline-end:"/Users/john/Documents/GitHub/Sible/src/pages/legal/legal.html"*/,
         })
     ], LegalPage);
     return LegalPage;
@@ -875,13 +931,13 @@ var LegalPage = /** @class */ (function () {
 
 /***/ }),
 
-/***/ 153:
+/***/ 152:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return RidesPage; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(12);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -909,7 +965,7 @@ var RidesPage = /** @class */ (function () {
     };
     RidesPage = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({
-            selector: 'page-rides',template:/*ion-inline-start:"/Users/john/Desktop/Desktop/Workspace/sible/src/pages/rides/rides.html"*/'<!--\n  Generated template for the RidesPage page.\n\n  See http://ionicframework.com/docs/components/#navigation for more info on\n  Ionic pages and navigation.\n-->\n<ion-header color="sibleColor">\n\n  <ion-navbar color="sibleColor">\n    <ion-title>Ride History</ion-title>\n  </ion-navbar>\n\n</ion-header>\n\n\n<ion-content padding>\n\n  <div class="error_text">\n    <h1>`Ooops`! you have no Hide History</h1>\n  </div>\n  <div class="padding">\n    <button style="border-color: #0e5387;margin:15px;width:50vw;border-radius:50px;left:18vw;" color="sibleColor" class="modal button" ion-button >Book a Ride</button>\n  </div>\n\n</ion-content>\n'/*ion-inline-end:"/Users/john/Desktop/Desktop/Workspace/sible/src/pages/rides/rides.html"*/,
+            selector: 'page-rides',template:/*ion-inline-start:"/Users/john/Documents/GitHub/Sible/src/pages/rides/rides.html"*/'<!--\n  Generated template for the RidesPage page.\n\n  See http://ionicframework.com/docs/components/#navigation for more info on\n  Ionic pages and navigation.\n-->\n<ion-header color="sibleColor">\n\n  <ion-navbar color="sibleColor">\n    <button ion-button menuToggle>\n      <ion-icon name="menu"></ion-icon>\n    </button>\n    <ion-title>Ride History</ion-title>\n  </ion-navbar>\n\n</ion-header>\n\n\n<ion-content padding>\n\n  <div class="error_text">\n    <h1>`Ooops`! you have no Hide History</h1>\n  </div>\n  <div class="padding">\n    <button style="border-color: #0e5387;margin:15px;width:50vw;border-radius:50px;left:18vw;" color="sibleColor" class="modal button" ion-button >Book a Ride</button>\n  </div>\n\n</ion-content>\n'/*ion-inline-end:"/Users/john/Documents/GitHub/Sible/src/pages/rides/rides.html"*/,
         }),
         __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* NavController */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* NavParams */]])
     ], RidesPage);
@@ -920,7 +976,7 @@ var RidesPage = /** @class */ (function () {
 
 /***/ }),
 
-/***/ 164:
+/***/ 163:
 /***/ (function(module, exports) {
 
 function webpackEmptyAsyncContext(req) {
@@ -933,77 +989,85 @@ function webpackEmptyAsyncContext(req) {
 webpackEmptyAsyncContext.keys = function() { return []; };
 webpackEmptyAsyncContext.resolve = webpackEmptyAsyncContext;
 module.exports = webpackEmptyAsyncContext;
-webpackEmptyAsyncContext.id = 164;
+webpackEmptyAsyncContext.id = 163;
 
 /***/ }),
 
-/***/ 208:
+/***/ 207:
 /***/ (function(module, exports, __webpack_require__) {
 
 var map = {
 	"../pages/account/account.module": [
+		382,
+		17
+	],
+	"../pages/addcard/addcard.module": [
+		384,
+		16
+	],
+	"../pages/addpublisher/addpublisher.module": [
 		383,
 		15
 	],
-	"../pages/addcard/addcard.module": [
-		382,
-		14
-	],
-	"../pages/addpublisher/addpublisher.module": [
-		384,
-		13
-	],
 	"../pages/chooseride/chooseride.module": [
 		385,
-		12
+		14
 	],
 	"../pages/forgot-pass/forgot-pass.module": [
-		386,
-		11
+		387,
+		13
 	],
 	"../pages/help/help.module": [
-		387,
-		10
+		386,
+		12
 	],
 	"../pages/legal/legal.module": [
-		389,
-		9
+		388,
+		11
 	],
 	"../pages/login/login.module": [
-		388,
-		8
+		389,
+		10
+	],
+	"../pages/modal-card/modal-card.module": [
+		391,
+		2
+	],
+	"../pages/modal-publisher/modal-publisher.module": [
+		390,
+		1
 	],
 	"../pages/modal/modal.module": [
-		390,
+		393,
 		0
 	],
 	"../pages/otp/otp.module": [
-		391,
-		7
+		392,
+		9
 	],
 	"../pages/payment/payment.module": [
-		392,
-		6
+		394,
+		8
 	],
 	"../pages/reset/reset.module": [
-		393,
-		5
+		395,
+		7
 	],
 	"../pages/rides/rides.module": [
-		394,
-		4
+		396,
+		6
 	],
 	"../pages/signup/signup.module": [
-		395,
-		3
+		397,
+		5
 	],
 	"../pages/signupcontact/signupcontact.module": [
-		396,
-		2
+		398,
+		4
 	],
 	"../pages/signuplicence/signuplicence.module": [
-		397,
-		1
+		399,
+		3
 	]
 };
 function webpackAsyncContext(req) {
@@ -1017,18 +1081,18 @@ function webpackAsyncContext(req) {
 webpackAsyncContext.keys = function webpackAsyncContextKeys() {
 	return Object.keys(map);
 };
-webpackAsyncContext.id = 208;
+webpackAsyncContext.id = 207;
 module.exports = webpackAsyncContext;
 
 /***/ }),
 
-/***/ 267:
+/***/ 266:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AccountPage; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(12);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -1056,7 +1120,7 @@ var AccountPage = /** @class */ (function () {
     };
     AccountPage = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({
-            selector: 'page-account',template:/*ion-inline-start:"/Users/john/Desktop/Desktop/Workspace/sible/src/pages/account/account.html"*/'<!--\n  Generated template for the AccountPage page.\n\n  See http://ionicframework.com/docs/components/#navigation for more info on\n  Ionic pages and navigation.\n-->\n<ion-header>\n\n  <ion-navbar>\n    <ion-title>account</ion-title>\n  </ion-navbar>\n\n</ion-header>\n\n\n<ion-content padding>\n\n</ion-content>\n'/*ion-inline-end:"/Users/john/Desktop/Desktop/Workspace/sible/src/pages/account/account.html"*/,
+            selector: 'page-account',template:/*ion-inline-start:"/Users/john/Documents/GitHub/Sible/src/pages/account/account.html"*/'<!--\n  Generated template for the AccountPage page.\n\n  See http://ionicframework.com/docs/components/#navigation for more info on\n  Ionic pages and navigation.\n-->\n<ion-header>\n\n  <ion-navbar>\n    <ion-title>account</ion-title>\n  </ion-navbar>\n\n</ion-header>\n\n\n<ion-content padding>\n\n</ion-content>\n'/*ion-inline-end:"/Users/john/Documents/GitHub/Sible/src/pages/account/account.html"*/,
         }),
         __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* NavController */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* NavParams */]])
     ], AccountPage);
@@ -1067,13 +1131,101 @@ var AccountPage = /** @class */ (function () {
 
 /***/ }),
 
+/***/ 267:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AddcardPage; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__providers_rest_rest__ = __webpack_require__(54);
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+
+/**
+ * Generated class for the AddcardPage page.
+ *
+ * See https://ionicframework.com/docs/components/#navigation for more info on
+ * Ionic pages and navigation.
+ */
+var AddcardPage = /** @class */ (function () {
+    function AddcardPage(navCtrl, navParams, restProvider) {
+        this.navCtrl = navCtrl;
+        this.navParams = navParams;
+        this.restProvider = restProvider;
+        this.data = {
+            'cardNumber': '',
+            'ExpDate': '',
+            'CVV': '',
+            'Country': ''
+        };
+    }
+    AddcardPage.prototype.ionViewDidLoad = function () {
+        console.log('ionViewDidLoad AddcardPage');
+    };
+    AddcardPage.prototype.addCard = function (data) {
+        console.log('Adding Card details ....');
+        this.restProvider.__addCard(data).then(function (result) {
+            console.log(result);
+        }, function (err) {
+            console.log(err);
+        });
+    };
+    AddcardPage.prototype.removeCard = function (data) {
+        console.log('removing a card function initiated');
+        this.restProvider.__removeCard(data).then(function (result) {
+            console.log(result);
+        }, function (err) {
+            console.log(err);
+        });
+    };
+    //
+    // removeCard(data){
+    //   console.log('removing a card function initiated');
+    //   this.restProvider.__removeCard(data).then((result) => {
+    //     console.log(result);
+    //   }, (err) => {
+    //     console.log(err);
+    //   });
+    // }
+    //
+    AddcardPage.prototype.updateCard = function (data) {
+        console.log('Updating a card function initiated');
+        this.restProvider.__updateCard(data).then(function (result) {
+            console.log(result);
+        }, function (err) {
+            console.log(err);
+        });
+    };
+    AddcardPage = __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({
+            selector: 'page-addcard',template:/*ion-inline-start:"/Users/john/Documents/GitHub/Sible/src/pages/addcard/addcard.html"*/'\n<ion-header>\n\n  <ion-navbar>\n    <ion-title>addcard</ion-title>\n  </ion-navbar>\n\n</ion-header>\n\n<ion-content padding>\n  <div class="addCardForm padding">\n    <form class="example-form">\n    <mat-form-field class="example-full-width">\n      <ion-icon matPrefix ios="ios-mail" md="md-mail"></ion-icon>\n      <input type="number" matInput placeholder="&#160;Card Number">\n      <!-- [(ngModel)]="data.cardNumber" -->\n    </mat-form-field>\n\n    <table class="example-full-width" cellspacing="0">\n      <tr>\n        <td>\n          <mat-form-field class="example-full-width">\n            <input matInput [matDatepicker]="picker" placeholder="Exp.Date">\n             <!-- [(ngModel)]="data.ExpDate" -->\n            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>\n            <mat-datepicker #picker></mat-datepicker>\n          </mat-form-field>\n        </td>\n        <td>\n          <mat-form-field class="example-full-width">\n            <ion-icon matPrefix ios="ios-mail" md="md-mail"></ion-icon>\n            <input type="number" matInput placeholder="&#160; CVV">\n          </mat-form-field>\n           <!-- [(ngModel)]="data.CVV" -->\n        </td>\n      </tr>\n    </table>\n\n    <mat-form-field class="example-full-width">\n      <ion-icon matPrefix ios="ios-mail" md="md-mail"></ion-icon>\n      <input type="number"matInput placeholder="&#160; Country">\n    </mat-form-field>\n     <!-- [(ngModel)]="data.Country"  -->\n\n    <div class="padding">\n        <button style="border-color: #0e5387;" id="loginButton" (click)="addCard()" ion-button block outline color="light">Save</button>\n    </div>\n</form>\n  </div>\n\n</ion-content>\n'/*ion-inline-end:"/Users/john/Documents/GitHub/Sible/src/pages/addcard/addcard.html"*/,
+        }),
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* NavController */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* NavParams */], __WEBPACK_IMPORTED_MODULE_2__providers_rest_rest__["a" /* RestProvider */]])
+    ], AddcardPage);
+    return AddcardPage;
+}());
+
+//# sourceMappingURL=addcard.js.map
+
+/***/ }),
+
 /***/ 268:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ChooseridePage; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(12);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -1101,7 +1253,7 @@ var ChooseridePage = /** @class */ (function () {
     };
     ChooseridePage = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({
-            selector: 'page-chooseride',template:/*ion-inline-start:"/Users/john/Desktop/Desktop/Workspace/sible/src/pages/chooseride/chooseride.html"*/'<!--\n  Generated template for the ChooseridePage page.\n\n  See http://ionicframework.com/docs/components/#navigation for more info on\n  Ionic pages and navigation.\n-->\n<ion-header>\n\n  <ion-navbar>\n    <ion-title>chooseride</ion-title>\n  </ion-navbar>\n\n</ion-header>\n\n\n<ion-content padding>\n\n</ion-content>\n'/*ion-inline-end:"/Users/john/Desktop/Desktop/Workspace/sible/src/pages/chooseride/chooseride.html"*/,
+            selector: 'page-chooseride',template:/*ion-inline-start:"/Users/john/Documents/GitHub/Sible/src/pages/chooseride/chooseride.html"*/'<!--\n  Generated template for the ChooseridePage page.\n\n  See http://ionicframework.com/docs/components/#navigation for more info on\n  Ionic pages and navigation.\n-->\n<ion-header>\n\n  <ion-navbar>\n    <ion-title>chooseride</ion-title>\n  </ion-navbar>\n\n</ion-header>\n\n\n<ion-content padding>\n\n</ion-content>\n'/*ion-inline-end:"/Users/john/Documents/GitHub/Sible/src/pages/chooseride/chooseride.html"*/,
         }),
         __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* NavController */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* NavParams */]])
     ], ChooseridePage);
@@ -1136,16 +1288,16 @@ Object(__WEBPACK_IMPORTED_MODULE_0__angular_platform_browser_dynamic__["a" /* pl
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AppModule; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser__ = __webpack_require__(29);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_ionic_angular__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_ionic_angular__ = __webpack_require__(12);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__angular_platform_browser_animations__ = __webpack_require__(328);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__angular_material__ = __webpack_require__(254);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__angular_material__ = __webpack_require__(253);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__angular_material_input__ = __webpack_require__(140);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__angular_material_icon__ = __webpack_require__(141);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__angular_material_form_field__ = __webpack_require__(55);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__angular_material_form_field__ = __webpack_require__(56);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__angular_material_select__ = __webpack_require__(142);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__ionic_native_geolocation__ = __webpack_require__(213);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__ionic_native_google_maps__ = __webpack_require__(209);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__ionic_native_toast__ = __webpack_require__(214);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__ionic_native_geolocation__ = __webpack_require__(212);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__ionic_native_google_maps__ = __webpack_require__(208);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__ionic_native_toast__ = __webpack_require__(213);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__angular_common_http__ = __webpack_require__(111);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__app_component__ = __webpack_require__(379);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__pages_home_home__ = __webpack_require__(112);
@@ -1157,17 +1309,17 @@ Object(__WEBPACK_IMPORTED_MODULE_0__angular_platform_browser_dynamic__["a" /* pl
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_20__pages_signuplicence_signuplicence__ = __webpack_require__(147);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_21__pages_otp_otp__ = __webpack_require__(149);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_22__pages_reset_reset__ = __webpack_require__(150);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_23__pages_addcard_addcard__ = __webpack_require__(143);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_23__pages_addcard_addcard__ = __webpack_require__(267);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_24__pages_chooseride_chooseride__ = __webpack_require__(268);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_25__pages_account_account__ = __webpack_require__(267);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_26__pages_legal_legal__ = __webpack_require__(152);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_25__pages_account_account__ = __webpack_require__(266);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_26__pages_legal_legal__ = __webpack_require__(151);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_27__pages_payment_payment__ = __webpack_require__(83);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_28__pages_help_help__ = __webpack_require__(151);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_29__pages_addpublisher_addpublisher__ = __webpack_require__(144);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_30__pages_rides_rides__ = __webpack_require__(153);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_31__ionic_native_status_bar__ = __webpack_require__(265);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_32__ionic_native_splash_screen__ = __webpack_require__(266);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_33__providers_rest_rest__ = __webpack_require__(61);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_28__pages_help_help__ = __webpack_require__(144);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_29__pages_addpublisher_addpublisher__ = __webpack_require__(143);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_30__pages_rides_rides__ = __webpack_require__(152);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_31__ionic_native_status_bar__ = __webpack_require__(264);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_32__ionic_native_splash_screen__ = __webpack_require__(265);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_33__providers_rest_rest__ = __webpack_require__(54);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -1177,6 +1329,8 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 
 
 
+//Custom Date Adapter
+// import { CustomDateAdapter } from '../CustomDateAdapter'
 
 
 
@@ -1253,16 +1407,18 @@ var AppModule = /** @class */ (function () {
                 __WEBPACK_IMPORTED_MODULE_12__angular_common_http__["b" /* HttpClientModule */],
                 __WEBPACK_IMPORTED_MODULE_2_ionic_angular__["d" /* IonicModule */].forRoot(__WEBPACK_IMPORTED_MODULE_13__app_component__["a" /* MyApp */], {}, {
                     links: [
-                        { loadChildren: '../pages/addcard/addcard.module#AddcardPageModule', name: 'AddcardPage', segment: 'addcard', priority: 'low', defaultHistory: [] },
                         { loadChildren: '../pages/account/account.module#AccountPageModule', name: 'AccountPage', segment: 'account', priority: 'low', defaultHistory: [] },
                         { loadChildren: '../pages/addpublisher/addpublisher.module#AddpublisherPageModule', name: 'AddpublisherPage', segment: 'addpublisher', priority: 'low', defaultHistory: [] },
+                        { loadChildren: '../pages/addcard/addcard.module#AddcardPageModule', name: 'AddcardPage', segment: 'addcard', priority: 'low', defaultHistory: [] },
                         { loadChildren: '../pages/chooseride/chooseride.module#ChooseridePageModule', name: 'ChooseridePage', segment: 'chooseride', priority: 'low', defaultHistory: [] },
-                        { loadChildren: '../pages/forgot-pass/forgot-pass.module#ForgotPassPageModule', name: 'ForgotPassPage', segment: 'forgot-pass', priority: 'low', defaultHistory: [] },
                         { loadChildren: '../pages/help/help.module#HelpPageModule', name: 'HelpPage', segment: 'help', priority: 'low', defaultHistory: [] },
-                        { loadChildren: '../pages/login/login.module#LoginPageModule', name: 'LoginPage', segment: 'login', priority: 'low', defaultHistory: [] },
+                        { loadChildren: '../pages/forgot-pass/forgot-pass.module#ForgotPassPageModule', name: 'ForgotPassPage', segment: 'forgot-pass', priority: 'low', defaultHistory: [] },
                         { loadChildren: '../pages/legal/legal.module#LegalPageModule', name: 'LegalPage', segment: 'legal', priority: 'low', defaultHistory: [] },
-                        { loadChildren: '../pages/modal/modal.module#ModalPageModule', name: 'ModalPage', segment: 'modal', priority: 'low', defaultHistory: [] },
+                        { loadChildren: '../pages/login/login.module#LoginPageModule', name: 'LoginPage', segment: 'login', priority: 'low', defaultHistory: [] },
+                        { loadChildren: '../pages/modal-publisher/modal-publisher.module#ModalPublisherPageModule', name: 'ModalPublisherPage', segment: 'modal-publisher', priority: 'low', defaultHistory: [] },
+                        { loadChildren: '../pages/modal-card/modal-card.module#ModalCardPageModule', name: 'ModalCardPage', segment: 'modal-card', priority: 'low', defaultHistory: [] },
                         { loadChildren: '../pages/otp/otp.module#OtpPageModule', name: 'OtpPage', segment: 'otp', priority: 'low', defaultHistory: [] },
+                        { loadChildren: '../pages/modal/modal.module#ModalPageModule', name: 'ModalPage', segment: 'modal', priority: 'low', defaultHistory: [] },
                         { loadChildren: '../pages/payment/payment.module#PaymentPageModule', name: 'PaymentPage', segment: 'payment', priority: 'low', defaultHistory: [] },
                         { loadChildren: '../pages/reset/reset.module#ResetPageModule', name: 'ResetPage', segment: 'reset', priority: 'low', defaultHistory: [] },
                         { loadChildren: '../pages/rides/rides.module#RidesPageModule', name: 'RidesPage', segment: 'rides', priority: 'low', defaultHistory: [] },
@@ -1310,6 +1466,7 @@ var AppModule = /** @class */ (function () {
                 // Camera,
                 // FilePath,
                 { provide: __WEBPACK_IMPORTED_MODULE_1__angular_core__["v" /* ErrorHandler */], useClass: __WEBPACK_IMPORTED_MODULE_2_ionic_angular__["c" /* IonicErrorHandler */] },
+                // {provide: DateAdapter, useClass: CustomDateAdapter},
                 __WEBPACK_IMPORTED_MODULE_33__providers_rest_rest__["a" /* RestProvider */]
             ]
         })
@@ -1327,16 +1484,16 @@ var AppModule = /** @class */ (function () {
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return MyApp; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(13);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__ionic_native_status_bar__ = __webpack_require__(265);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__ionic_native_splash_screen__ = __webpack_require__(266);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__ionic_native_status_bar__ = __webpack_require__(264);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__ionic_native_splash_screen__ = __webpack_require__(265);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__pages_home_home__ = __webpack_require__(112);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__pages_login_login__ = __webpack_require__(41);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__pages_payment_payment__ = __webpack_require__(83);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__pages_legal_legal__ = __webpack_require__(152);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__pages_help_help__ = __webpack_require__(151);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__pages_addpublisher_addpublisher__ = __webpack_require__(144);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__pages_rides_rides__ = __webpack_require__(153);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__pages_legal_legal__ = __webpack_require__(151);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__pages_help_help__ = __webpack_require__(144);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__pages_addpublisher_addpublisher__ = __webpack_require__(143);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__pages_rides_rides__ = __webpack_require__(152);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_11_ionic_angular_components_app_app__ = __webpack_require__(14);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -1382,9 +1539,10 @@ var MyApp = /** @class */ (function () {
             { title: 'Home', icon: 'ios-home-outline', component: __WEBPACK_IMPORTED_MODULE_4__pages_home_home__["a" /* HomePage */] },
             { title: 'Payment', icon: 'ios-card', component: __WEBPACK_IMPORTED_MODULE_6__pages_payment_payment__["a" /* PaymentPage */] },
             { title: 'Your Rides', icon: 'ios-car-outline', component: __WEBPACK_IMPORTED_MODULE_10__pages_rides_rides__["a" /* RidesPage */] },
-            { title: 'Become a Publisher', icon: 'ios-person-add-outline', component: __WEBPACK_IMPORTED_MODULE_9__pages_addpublisher_addpublisher__["a" /* AddpublisherPage */] },
+            { title: 'Publisher', icon: 'ios-person-add-outline', component: __WEBPACK_IMPORTED_MODULE_9__pages_addpublisher_addpublisher__["a" /* AddpublisherPage */] },
             { title: 'Help', icon: 'ios-help-circle-outline', component: __WEBPACK_IMPORTED_MODULE_8__pages_help_help__["a" /* HelpPage */] },
-            { title: 'Legal', icon: 'ios-briefcase-outline', component: __WEBPACK_IMPORTED_MODULE_7__pages_legal_legal__["a" /* LegalPage */] }
+            { title: 'Legal', icon: 'ios-briefcase-outline', component: __WEBPACK_IMPORTED_MODULE_7__pages_legal_legal__["a" /* LegalPage */] },
+            { title: 'LogOut', icon: 'ios-log-out-outline', component: __WEBPACK_IMPORTED_MODULE_8__pages_help_help__["a" /* HelpPage */] }
         ];
     }
     MyApp.prototype.openModal = function () {
@@ -1413,7 +1571,7 @@ var MyApp = /** @class */ (function () {
         __metadata("design:type", __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["h" /* Nav */])
     ], MyApp.prototype, "nav", void 0);
     MyApp = __decorate([
-        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({template:/*ion-inline-start:"/Users/john/Desktop/Desktop/Workspace/sible/src/app/app.html"*/'<ion-menu id="myMenu" [content]="content">\n  <ion-header>\n    <ion-toolbar color="sibleColor">\n      <ion-title>Menu</ion-title>\n    </ion-toolbar>\n  </ion-header>\n<style media="screen">\n.content-ios {\n  background-color: #0d5487;\n}\n.list-ios > .item-block:first-child {\n    border-top: 0.55px solid #c8c7cc00;\n}\n.list-ios .item-block .item-inner {\n    border-bottom: 0.55px solid #c8c7cc00;\n}\n.item-ios {\n    color: #fff;\n    background-color: #0d548700;\n}\n\n.card-ios {\n    background: #fff0;\n    color: #fff;\n}\n//this is the menu styles\n.card-md {\n    background: #0d5487;\n}\n.content-md {\n    color: #fff;\n    background-color: #0d5487;\n}\n.card-md {\n    background: #0d5487;\n}\n.custom-avatar {\n    border: 1px solid #0d5487;\n}\n.card-md {\n    color: #ffffff;\n}\n.item-md {\n    color: #ffffff;\n    background-color: #0d5487;\n}\n.list-md .item-block .item-inner {\n    border-bottom: 1px solid #0d5487 !important;\n}\n</style>\n\n  <ion-content>\n    <ion-card text-center class="hide-card"><br>\n    <img src="../assets/imgs/user.svg" class="custom-avatar"/><br>\n\n    <h2 style="color:white">Calvin Chou</h2>\n    <p style="color:white">Calvin@gmail.com</p>\n    <hr>\n</ion-card>\n<ion-list no-lines>\n           <button menuClose ion-item *ngFor="let p of pages" (click)="openPage(p)">\n               <ion-icon name="{{p.icon}}" item-left></ion-icon>\n               {{p.title}}\n           </button>\n       <!-- </ion-list> -->\n\n      <!-- <button menuClose ion-item (click)="goToHome()">\n        Home\n      </button>\n      <button menuClose ion-item (click)="goToPayemt()">\n        Payment\n      </button>\n      <button menuClose ion-item (click)="goToRides()">\n        Your Rides\n      </button>\n      <button menuClose ion-item (click)="goToPulisher()">\n        Become a Publisher\n      </button>\n      <button menuClose ion-item (click)="goToHelp()">\n        Help\n      </button>\n      <button menuClose ion-item (click)="goToLegal()">\n        Legal\n      </button>\n -->\n\n\n\n\n\n\n    </ion-list>\n  </ion-content>\n\n</ion-menu>\n\n<!-- Disable swipe-to-go-back because it\'s poor UX to combine STGB with side menus -->\n<ion-nav [root]="rootPage" #content swipeBackEnabled="false"></ion-nav>\n'/*ion-inline-end:"/Users/john/Desktop/Desktop/Workspace/sible/src/app/app.html"*/
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({template:/*ion-inline-start:"/Users/john/Documents/GitHub/Sible/src/app/app.html"*/'<ion-menu id="myMenu" [content]="content">\n  <ion-header>\n    <ion-toolbar color="sibleColor">\n      <ion-title>Menu</ion-title>\n    </ion-toolbar>\n  </ion-header>\n<style media="screen">\n.content-ios {\n  background-color: #0d5487;\n}\n.list-ios > .item-block:first-child {\n    border-top: 0.55px solid #c8c7cc00;\n}\n.list-ios .item-block .item-inner {\n    border-bottom: 0.55px solid #c8c7cc00;\n}\n.item-ios {\n    color: #fff;\n    background-color: #0d548700;\n}\n\n.card-ios {\n    background: #fff0;\n    color: #fff;\n}\n//this is the menu styles\n.card-md {\n    background: #0d5487;\n}\n.content-md {\n    color: #fff;\n    background-color: #0d5487;\n}\n.card-md {\n    background: #0d5487;\n}\n.custom-avatar {\n    border: 1px solid #0d5487;\n}\n.card-md {\n    color: #ffffff;\n}\n.item-md {\n    color: #ffffff;\n    background-color: #0d5487;\n}\n.list-md .item-block .item-inner {\n    border-bottom: 1px solid #0d5487 !important;\n}\n</style>\n\n  <ion-content>\n    <ion-card text-center class="hide-card"><br>\n    <img src="../assets/imgs/user.svg" class="custom-avatar"/><br>\n\n    <h2 style="color:white">Calvin Chou</h2>\n    <p style="color:white">Calvin@gmail.com</p>\n    <hr>\n</ion-card>\n<ion-list no-lines>\n           <button menuClose ion-item *ngFor="let p of pages" (click)="openPage(p)">\n               <ion-icon name="{{p.icon}}" item-left></ion-icon>\n               {{p.title}}\n           </button>\n       <!-- </ion-list> -->\n\n      <!-- <button menuClose ion-item (click)="goToHome()">\n        Home\n      </button>\n      <button menuClose ion-item (click)="goToPayemt()">\n        Payment\n      </button>\n      <button menuClose ion-item (click)="goToRides()">\n        Your Rides\n      </button>\n      <button menuClose ion-item (click)="goToPulisher()">\n        Become a Publisher\n      </button>\n      <button menuClose ion-item (click)="goToHelp()">\n        Help\n      </button>\n      <button menuClose ion-item (click)="goToLegal()">\n        Legal\n      </button>\n -->\n\n\n\n\n\n\n    </ion-list>\n  </ion-content>\n\n</ion-menu>\n\n<!-- Disable swipe-to-go-back because it\'s poor UX to combine STGB with side menus -->\n<ion-nav [root]="rootPage" #content swipeBackEnabled="false"></ion-nav>\n'/*ion-inline-end:"/Users/john/Documents/GitHub/Sible/src/app/app.html"*/
         }),
         __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["k" /* Platform */], __WEBPACK_IMPORTED_MODULE_11_ionic_angular_components_app_app__["a" /* App */], __WEBPACK_IMPORTED_MODULE_2__ionic_native_status_bar__["a" /* StatusBar */], __WEBPACK_IMPORTED_MODULE_3__ionic_native_splash_screen__["a" /* SplashScreen */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* ModalController */]])
     ], MyApp);
@@ -1430,7 +1588,7 @@ var MyApp = /** @class */ (function () {
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ListPage; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(12);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -1469,7 +1627,7 @@ var ListPage = /** @class */ (function () {
     };
     ListPage = ListPage_1 = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({
-            selector: 'page-list',template:/*ion-inline-start:"/Users/john/Desktop/Desktop/Workspace/sible/src/pages/list/list.html"*/'<ion-header>\n  <ion-navbar>\n    <button ion-button >\n      <ion-icon name="menu"></ion-icon>\n    </button>\n    <ion-title>List</ion-title>\n  </ion-navbar>\n</ion-header>\n\n<ion-content>\n  <ion-list>\n    <button ion-item *ngFor="let item of items" (click)="itemTapped($event, item)">\n      <ion-icon [name]="item.icon" item-start></ion-icon>\n      {{item.title}}\n      <div class="item-note" item-end>\n        {{item.note}}\n      </div>\n    </button>\n  </ion-list>\n  <div *ngIf="selectedItem" padding>\n    You navigated here from <b>{{selectedItem.title}}</b>\n  </div>\n</ion-content>\n'/*ion-inline-end:"/Users/john/Desktop/Desktop/Workspace/sible/src/pages/list/list.html"*/
+            selector: 'page-list',template:/*ion-inline-start:"/Users/john/Documents/GitHub/Sible/src/pages/list/list.html"*/'<ion-header>\n  <ion-navbar>\n    <button ion-button >\n      <ion-icon name="menu"></ion-icon>\n    </button>\n    <ion-title>List</ion-title>\n  </ion-navbar>\n</ion-header>\n\n<ion-content>\n  <ion-list>\n    <button ion-item *ngFor="let item of items" (click)="itemTapped($event, item)">\n      <ion-icon [name]="item.icon" item-start></ion-icon>\n      {{item.title}}\n      <div class="item-note" item-end>\n        {{item.note}}\n      </div>\n    </button>\n  </ion-list>\n  <div *ngIf="selectedItem" padding>\n    You navigated here from <b>{{selectedItem.title}}</b>\n  </div>\n</ion-content>\n'/*ion-inline-end:"/Users/john/Documents/GitHub/Sible/src/pages/list/list.html"*/
         }),
         __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* NavController */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* NavParams */]])
     ], ListPage);
@@ -1487,12 +1645,12 @@ var ListPage = /** @class */ (function () {
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return LoginPage; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(13);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_forms__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_forms__ = __webpack_require__(13);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__forgot_pass_forgot_pass__ = __webpack_require__(145);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__signup_signup__ = __webpack_require__(146);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__home_home__ = __webpack_require__(112);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__providers_rest_rest__ = __webpack_require__(61);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__providers_rest_rest__ = __webpack_require__(54);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -1517,14 +1675,19 @@ var __metadata = (this && this.__metadata) || function (k, v) {
  * Ionic pages and navigation.
  */
 var LoginPage = /** @class */ (function () {
-    function LoginPage(viewCtrl, navCtrl, navParams, menuCtrl, app, restProvider) {
+    function LoginPage(viewCtrl, navCtrl, navParams, menuCtrl, app, restProvider, toastCtrl) {
         this.viewCtrl = viewCtrl;
         this.navCtrl = navCtrl;
         this.navParams = navParams;
         this.menuCtrl = menuCtrl;
         this.app = app;
         this.restProvider = restProvider;
-        this.user = {};
+        this.toastCtrl = toastCtrl;
+        this.user = {
+            "username": "calvin@gmail.com",
+            "password": "1234567890",
+            "token": 'some string'
+        };
         this.email = new __WEBPACK_IMPORTED_MODULE_2__angular_forms__["b" /* FormControl */]('', [__WEBPACK_IMPORTED_MODULE_2__angular_forms__["j" /* Validators */].required, __WEBPACK_IMPORTED_MODULE_2__angular_forms__["j" /* Validators */].email]);
         this.hide = true;
         this.menuCtrl.enable(false, 'myMenu');
@@ -1547,21 +1710,25 @@ var LoginPage = /** @class */ (function () {
         // this.navCtrl.pop();
     };
     LoginPage.prototype.login = function () {
-        if (this.user.email !== null && this.user.email !== '') {
-            localStorage.email = this.user.email;
-            console.log('user email: ' + localStorage.email);
+        var _this = this;
+        console.log(this.user.username);
+        if (this.user.userame !== null && this.user.username !== '') {
+            localStorage.username = this.user.username;
+            console.log('user username: ' + localStorage.username);
             if (this.user.password !== null && this.user.password !== '') {
                 var password = this.user.password;
                 // if(password.length >== 8){
                 localStorage.password = password;
                 console.log('user password: ' + localStorage.password);
                 console.log(this.user);
-                // making an a service call
+                // making an a service cacll
                 this.restProvider.__userLogin(this.user).then(function (result) {
                     console.log(result);
-                    alert(result);
+                    // alert(result);
+                    _this.sucessLogin();
                 }, function (err) {
                     console.log(err);
+                    _this.errorLogin();
                 });
                 // end of service call
                 // }else{
@@ -1572,7 +1739,7 @@ var LoginPage = /** @class */ (function () {
             }
         }
         else {
-            alert('Please enter your email address');
+            alert('Please enter your username address');
         }
         // if(this.user.email == '' && this.user.email == null){
         //   if(this.user.password == '' && this.user.password == null){
@@ -1598,15 +1765,34 @@ var LoginPage = /** @class */ (function () {
         console.log('Go to signup page function');
         this.navCtrl.push(__WEBPACK_IMPORTED_MODULE_4__signup_signup__["a" /* SignupPage */]);
     };
+    LoginPage.prototype.errorLogin = function () {
+        // this.favorite = true;
+        var toast = this.toastCtrl.create({
+            message: "Opps Something Went Wrong with the login!",
+            duration: 2000
+        });
+        toast.present();
+        this.user = null;
+    };
+    LoginPage.prototype.sucessLogin = function () {
+        // this.favorite = true;
+        var toast = this.toastCtrl.create({
+            message: "Login Successful !",
+            duration: 2000
+        });
+        toast.present();
+    };
     LoginPage = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({
-            selector: 'page-login',template:/*ion-inline-start:"/Users/john/Desktop/Desktop/Workspace/sible/src/pages/login/login.html"*/'<!--\n  Generated template for the LoginPage page.\n\n  See http://ionicframework.com/docs/components/#navigation for more info on\n  Ionic pages and navigation.\n-->\n\n\n<ion-content padding style="background-image: url(\'assets/imgs/bg.png\');background-size:cover">\n<br><br>\n<div class="logos">\n  <img src="assets/imgs/logo.png" alt="logo" style="width:55%;margin-left:77px;margin-top:54px">\n</div>\n<br>\n  <div class="LoginForm padding">\n\n    <mat-form-field>\n      <ion-icon matPrefix ios="ios-mail" md="md-mail"></ion-icon>\n      <input matInput placeholder=" &#160; Enter your email" [formControl]="email" required [(ngModel)]="user.username">\n      <mat-error *ngIf="email.invalid">{{getErrorMessage()}}</mat-error>\n    </mat-form-field>\n\n\n    <mat-form-field>\n      <ion-icon matPrefix ios="ios-unlock" md="md-unlock"></ion-icon>\n      <input matInput placeholder="  &#160; Enter your password" [type]="hide ? \'password\' : \'text\'" [(ngModel)]="user.password">\n      <mat-icon matSuffix (click)="hide = !hide">{{hide ? \'visibility\' : \'visibility_off\'}}</mat-icon>\n    </mat-form-field>\n\n    <br><br>\n\n    <span (click)="forgotPass()" style="color:#4b4b4b;text-align:right;">Forgot password<b style="color:#318ebc;"> ?</b></span>\n    <div class="padding" style="text-align:center;">\n      <button style="border-color: #0e5387;margin:15px 0;" id="loginButton" (click)="login()" ion-button block outline color="light">Log in</button>\n    </div>\n    <span (click)="signup()" style="color:#4b4b4b;text-align:center">Don\'t have an account ? <b style="color:#318ebc;">Signup</b></span>\n\n  </div>\n\n</ion-content>\n'/*ion-inline-end:"/Users/john/Desktop/Desktop/Workspace/sible/src/pages/login/login.html"*/,
+            selector: 'page-login',template:/*ion-inline-start:"/Users/john/Documents/GitHub/Sible/src/pages/login/login.html"*/'<!--\n  Generated template for the LoginPage page.\n\n  See http://ionicframework.com/docs/components/#navigation for more info on\n  Ionic pages and navigation.\n-->\n<style media="screen">\n  .center {\n    position: relative; /* or absolute */\n    top: 15vh;\n    left: 50%;\n    transform: translate(-50%, -50%);\n  }\n</style>\n\n<ion-content>\n<br><br>\n<div class="logos">\n  <img class="center" src="assets/imgs/logo.png" alt="logo" style="width:55vw;margin-top:30px">\n\n</div>\n<br>\n  <div class="LoginForm padding">\n\n    <mat-form-field>\n      <ion-icon matPrefix ios="ios-mail" md="md-mail"></ion-icon>\n      <input matInput placeholder=" &#160; Enter your email" [formControl]="email" required [(ngModel)]="user.username">\n      <mat-error *ngIf="email.invalid">{{getErrorMessage()}}</mat-error>\n    </mat-form-field>\n\n\n    <mat-form-field>\n      <ion-icon matPrefix ios="ios-unlock" md="md-unlock"></ion-icon>\n      <input matInput placeholder="  &#160; Enter your password" [type]="hide ? \'password\' : \'text\'" [(ngModel)]="user.password">\n      <mat-icon matSuffix (click)="hide = !hide">{{hide ? \'visibility\' : \'visibility_off\'}}</mat-icon>\n    </mat-form-field>\n\n    <br><br>\n\n    <span (click)="forgotPass()" style="color:#4b4b4b;text-align:right;">Forgot password<b style="color:#318ebc;"> ?</b></span>\n    <div class="padding" style="text-align:center;">\n      <button style="border-color: #0e5387;margin:15px 0;" id="loginButton" (click)="pushPage()" ion-button block outline color="light">Log in</button>\n    </div>\n    <span (click)="signup()" style="color:#4b4b4b;text-align:center">Don\'t have an account ? <b style="color:#318ebc;">Signup</b></span>\n\n  </div>\n\n</ion-content>\n'/*ion-inline-end:"/Users/john/Documents/GitHub/Sible/src/pages/login/login.html"*/,
         }),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["l" /* ViewController */],
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["m" /* ViewController */],
             __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* NavController */],
             __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* NavParams */],
             __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* MenuController */],
-            __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["a" /* App */], __WEBPACK_IMPORTED_MODULE_6__providers_rest_rest__["a" /* RestProvider */]])
+            __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["a" /* App */],
+            __WEBPACK_IMPORTED_MODULE_6__providers_rest_rest__["a" /* RestProvider */],
+            __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["l" /* ToastController */]])
     ], LoginPage);
     return LoginPage;
 }());
@@ -1615,7 +1801,7 @@ var LoginPage = /** @class */ (function () {
 
 /***/ }),
 
-/***/ 61:
+/***/ 54:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1870,6 +2056,28 @@ var RestProvider = /** @class */ (function () {
             });
         });
     };
+    RestProvider.prototype.__removeCard = function (data) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            _this.http.post(_this.apiUrl + '................................./removeCard', JSON.stringify(data), httpOptions)
+                .subscribe(function (res) {
+                resolve(res);
+            }, function (err) {
+                reject(err);
+            });
+        });
+    };
+    RestProvider.prototype.__updateCard = function (data) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            _this.http.post(_this.apiUrl + '................................./updateCard', JSON.stringify(data), httpOptions)
+                .subscribe(function (res) {
+                resolve(res);
+            }, function (err) {
+                reject(err);
+            });
+        });
+    };
     /////////////////////////////////////////////////////////////////////////////////
     ////////////////////////                        /////////////////////////////////
     ////////////////////////      UPDATE LICENCE   /////////////////////////////////
@@ -1950,8 +2158,7 @@ var RestProvider = /** @class */ (function () {
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return PaymentPage; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(13);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__pages_addcard_addcard__ = __webpack_require__(143);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(12);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -1963,7 +2170,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 
 
-
 /**
  * Generated class for the PaymentPage page.
  *
@@ -1971,11 +2177,12 @@ var __metadata = (this && this.__metadata) || function (k, v) {
  * Ionic pages and navigation.
  */
 var PaymentPage = /** @class */ (function () {
-    function PaymentPage(navCtrl, navParams, platform) {
+    function PaymentPage(navCtrl, navParams, platform, modalController) {
         var _this = this;
         this.navCtrl = navCtrl;
         this.navParams = navParams;
         this.platform = platform;
+        this.modalController = modalController;
         var backAction = platform.registerBackButtonAction(function () {
             console.log("second");
             _this.navCtrl.pop();
@@ -1993,15 +2200,32 @@ var PaymentPage = /** @class */ (function () {
         this.navCtrl.pop();
         // }
     };
+    // 
+    //
+    // public openModal(){
+    //   var data = { message : 'hello world' };
+    //   var modalPage = this.modalController.create('ModalPageCard',data);
+    //   modalPage.present();
+    // }
+    //
+    //
+    //  public closeModal(){
+    //    this.viewCtrl.dismiss();
+    // }
+    //
+    //
     PaymentPage.prototype.addCard = function () {
-        this.navCtrl.push(__WEBPACK_IMPORTED_MODULE_2__pages_addcard_addcard__["a" /* AddcardPage */]);
-        console.log('going to add card page on ');
+        // this.navCtrl.push(AddcardPage);
+        // console.log('going to add card page on ');
+        var data = { message: 'hello world' };
+        var modalPage = this.modalController.create('ModalCardPage', data);
+        modalPage.present();
     };
     PaymentPage = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({
-            selector: 'page-payment',template:/*ion-inline-start:"/Users/john/Desktop/Desktop/Workspace/sible/src/pages/payment/payment.html"*/'<!--\n  Generated template for the PaymentPage page.\n\n  See http://ionicframework.com/docs/components/#navigation for more info on\n  Ionic pages and navigation.\n-->\n<!-- <ion-header>\n  <ion-navbar color="sibleColor">\n    <ion-title>payment</ion-title>\n  </ion-navbar>\n</ion-header> -->\n<ion-header>\n <ion-navbar hideBackButton color="sibleColor">\n    <ion-buttons left>\n        <button ion-button (click)="setBackButtonAction()">\n            <ion-icon class="customIcon" name="arrow-back"></ion-icon>\n        </button>\n    </ion-buttons>\n    <ion-title>Payment</ion-title>\n </ion-navbar>\n</ion-header>\n<style>\n  .dot{\n    position: inherit;\n    display: inline-block;\n    color: #000;\n    background-color: black;\n    width: 5px;\n    height: 5px;\n    border-radius: 50px;\n    margin-bottom: 0.5vh;\n    margin-left: 0.3vh;\n}\n</style>\n\n<ion-content>\n\n  <ion-item-group>\n    <ion-item-divider color="grayIsh">Payment Methods</ion-item-divider>\n    <ion-item style="padding-left:50px;">\n       <ion-icon style="font-size:25px" color="sibleColor" ios="ios-card" md="md-card"></ion-icon>\n       <p style="display:inline-block;">\n       <span class="dot"></span>\n       <span class="dot"></span>\n       <span class="dot"></span>\n       <span class="dot"></span>\n         9873</p>\n     </ion-item>\n     <ion-item style="padding-left:50px;">\n      <ion-icon style="font-size:25px" color="sibleColor" ios="ios-card" md="md-card"></ion-icon>\n      <p style="display:inline-block">\n      <span class="dot"></span>\n      <span class="dot"></span>\n      <span class="dot"></span>\n      <span class="dot"></span>\n        7348</p>\n    </ion-item><br>\n    <ion-item-divider color="grayIsh">Add Card</ion-item-divider>\n\n    <ion-item><a style="color:white">Add Payment Method</a></ion-item>\n    <!-- (click)="addCard()" -->\n  </ion-item-group>\n\n</ion-content>\n'/*ion-inline-end:"/Users/john/Desktop/Desktop/Workspace/sible/src/pages/payment/payment.html"*/,
+            selector: 'page-payment',template:/*ion-inline-start:"/Users/john/Documents/GitHub/Sible/src/pages/payment/payment.html"*/'<!--\n  Generated template for the PaymentPage page.\n\n  See http://ionicframework.com/docs/components/#navigation for more info on\n  Ionic pages and navigation.\n-->\n<!-- <ion-header>\n  <ion-navbar color="sibleColor">\n    <ion-title>payment</ion-title>\n  </ion-navbar>\n</ion-header> -->\n<ion-header>\n <ion-navbar hideBackButton color="sibleColor">\n    <ion-buttons left>\n      <button ion-button menuToggle>\n        <ion-icon name="menu"></ion-icon>\n      </button>\n    </ion-buttons>\n    <ion-title>Payment</ion-title>\n </ion-navbar>\n</ion-header>\n<style>\n  .dot{\n    position: inherit;\n    display: inline-block;\n    color: #000;\n    background-color: black;\n    width: 5px;\n    height: 5px;\n    border-radius: 50px;\n    margin-bottom: 0.5vh;\n    margin-left: 0.3vh;\n}\n</style>\n\n<ion-content>\n\n  <ion-item-group>\n    <ion-item-divider color="grayIsh">Payment Methods</ion-item-divider>\n    <ion-item style="padding-left:50px;">\n       <ion-icon style="font-size:25px" color="sibleColor" ios="ios-card" md="md-card"></ion-icon>\n       <p style="display:inline-block;">\n       <span class="dot"></span>\n       <span class="dot"></span>\n       <span class="dot"></span>\n       <span class="dot"></span>\n         9873</p>\n     </ion-item>\n     <ion-item style="padding-left:50px;">\n      <ion-icon style="font-size:25px" color="sibleColor" ios="ios-card" md="md-card"></ion-icon>\n      <p style="display:inline-block">\n      <span class="dot"></span>\n      <span class="dot"></span>\n      <span class="dot"></span>\n      <span class="dot"></span>\n        7348</p>\n    </ion-item><br>\n    <ion-item-divider (click)="addCard()" color="grayIsh">Add Card</ion-item-divider>\n\n    <ion-item><a style="color:white">Add Payment Method</a></ion-item>\n    <!-- (click)="addCard()" -->\n  </ion-item-group>\n\n</ion-content>\n'/*ion-inline-end:"/Users/john/Documents/GitHub/Sible/src/pages/payment/payment.html"*/,
         }),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* NavController */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* NavParams */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["k" /* Platform */]])
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* NavController */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* NavParams */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["k" /* Platform */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* ModalController */]])
     ], PaymentPage);
     return PaymentPage;
 }());

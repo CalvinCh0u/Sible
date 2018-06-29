@@ -1,14 +1,14 @@
 webpackJsonp([13],{
 
-/***/ 384:
+/***/ 387:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AddpublisherPageModule", function() { return AddpublisherPageModule; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ForgotPassPageModule", function() { return ForgotPassPageModule; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(13);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__addpublisher__ = __webpack_require__(144);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__forgot_pass__ = __webpack_require__(145);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -18,23 +18,23 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 
 
 
-var AddpublisherPageModule = /** @class */ (function () {
-    function AddpublisherPageModule() {
+var ForgotPassPageModule = /** @class */ (function () {
+    function ForgotPassPageModule() {
     }
-    AddpublisherPageModule = __decorate([
+    ForgotPassPageModule = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["J" /* NgModule */])({
             declarations: [
-                __WEBPACK_IMPORTED_MODULE_2__addpublisher__["a" /* AddpublisherPage */],
+                __WEBPACK_IMPORTED_MODULE_2__forgot_pass__["a" /* ForgotPassPage */],
             ],
             imports: [
-                __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["e" /* IonicPageModule */].forChild(__WEBPACK_IMPORTED_MODULE_2__addpublisher__["a" /* AddpublisherPage */]),
+                __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["e" /* IonicPageModule */].forChild(__WEBPACK_IMPORTED_MODULE_2__forgot_pass__["a" /* ForgotPassPage */]),
             ],
         })
-    ], AddpublisherPageModule);
-    return AddpublisherPageModule;
+    ], ForgotPassPageModule);
+    return ForgotPassPageModule;
 }());
 
-//# sourceMappingURL=addpublisher.module.js.map
+//# sourceMappingURL=forgot-pass.module.js.map
 
 /***/ })
 

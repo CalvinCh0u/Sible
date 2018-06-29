@@ -4,7 +4,7 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { LoginPage } from '../../pages/login/login';
 import { SignuplicencePage } from '../../pages/signuplicence/signuplicence';
 
-import { NativeDateAdapter } from "@angular/material";
+// import { NativeDateAdapter } from "@angular/material";
 
 // import { File } from '@ionic-native/file';
 // import { Transfer, TransferObject } from '@ionic-native/transfer';
@@ -19,7 +19,7 @@ import { NativeDateAdapter } from "@angular/material";
   selector: 'page-signup',
   templateUrl: 'signup.html',
 })
-export class SignupPage  extends NativeDateAdapter{
+export class SignupPage{
 
 
 

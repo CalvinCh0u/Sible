@@ -1,14 +1,14 @@
 webpackJsonp([14],{
 
-/***/ 382:
+/***/ 385:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AddcardPageModule", function() { return AddcardPageModule; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ChooseridePageModule", function() { return ChooseridePageModule; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(13);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__addcard__ = __webpack_require__(143);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__chooseride__ = __webpack_require__(268);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -18,23 +18,23 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 
 
 
-var AddcardPageModule = /** @class */ (function () {
-    function AddcardPageModule() {
+var ChooseridePageModule = /** @class */ (function () {
+    function ChooseridePageModule() {
     }
-    AddcardPageModule = __decorate([
+    ChooseridePageModule = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["J" /* NgModule */])({
             declarations: [
-                __WEBPACK_IMPORTED_MODULE_2__addcard__["a" /* AddcardPage */],
+                __WEBPACK_IMPORTED_MODULE_2__chooseride__["a" /* ChooseridePage */],
             ],
             imports: [
-                __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["e" /* IonicPageModule */].forChild(__WEBPACK_IMPORTED_MODULE_2__addcard__["a" /* AddcardPage */]),
+                __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["e" /* IonicPageModule */].forChild(__WEBPACK_IMPORTED_MODULE_2__chooseride__["a" /* ChooseridePage */]),
             ],
         })
-    ], AddcardPageModule);
-    return AddcardPageModule;
+    ], ChooseridePageModule);
+    return ChooseridePageModule;
 }());
 
-//# sourceMappingURL=addcard.module.js.map
+//# sourceMappingURL=chooseride.module.js.map
 
 /***/ })
 

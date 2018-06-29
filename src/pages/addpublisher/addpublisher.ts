@@ -15,6 +15,9 @@ import { ModalController } from 'ionic-angular';
 })
 export class AddpublisherPage {
 
+  // noPublisher: boolean = true;
+  Publisher: boolean = false;
+
   constructor(public navCtrl: NavController, public navParams: NavParams,public modalController:ModalController) {
   }
 
@@ -25,11 +28,26 @@ export class AddpublisherPage {
 
 
 
+
   addPiblisher(){
     var data = { message : 'hello world' };
     var modalPage = this.modalController.create('ModalPublisherPage',data);
     modalPage.present();
+
+    // setTimeout(function() {
+
+      this.Publisher = true;
+      // alert('this is my app' );
+
+    // }, 100);
+
+
+
+
+
   }
+
+
 
 
 

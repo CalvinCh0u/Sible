@@ -28239,6 +28239,14 @@ page-modal .buto {
   text-align: center;
 }
 
+page-modal .button-md-sibleColor {
+  border-color: #0e5387;
+  margin: 15px;
+  width: 50vw;
+  border-radius: 50px;
+  left: 20vw;
+}
+
 page-modal .button-ios-sibleColor {
   border-color: #0e5387;
   margin: 15px;

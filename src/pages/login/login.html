@@ -4,12 +4,20 @@
   See http://ionicframework.com/docs/components/#navigation for more info on
   Ionic pages and navigation.
 -->
+<style media="screen">
+  .center {
+    position: relative; /* or absolute */
+    top: 15vh;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+</style>
 
-
-<ion-content padding style="background-image: url('assets/imgs/bg.png');background-size:cover">
+<ion-content>
 <br><br>
 <div class="logos">
-  <img src="assets/imgs/logo.png" alt="logo" style="width:55%;margin-left:77px;margin-top:54px">
+  <img class="center" src="assets/imgs/logo.png" alt="logo" style="width:55vw;margin-top:30px">
+
 </div>
 <br>
   <div class="LoginForm padding">
@@ -31,7 +39,7 @@
 
     <span (click)="forgotPass()" style="color:#4b4b4b;text-align:right;">Forgot password<b style="color:#318ebc;"> ?</b></span>
     <div class="padding" style="text-align:center;">
-      <button style="border-color: #0e5387;margin:15px 0;" id="loginButton" (click)="login()" ion-button block outline color="light">Log in</button>
+      <button style="border-color: #0e5387;margin:15px 0;" id="loginButton" (click)="pushPage()" ion-button block outline color="light">Log in</button>
     </div>
     <span (click)="signup()" style="color:#4b4b4b;text-align:center">Don't have an account ? <b style="color:#318ebc;">Signup</b></span>
 

@@ -1,14 +1,14 @@
 webpackJsonp([4],{
 
-/***/ 394:
+/***/ 398:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "RidesPageModule", function() { return RidesPageModule; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SignupcontactPageModule", function() { return SignupcontactPageModule; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(13);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__rides__ = __webpack_require__(153);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__signupcontact__ = __webpack_require__(148);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -18,23 +18,23 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 
 
 
-var RidesPageModule = /** @class */ (function () {
-    function RidesPageModule() {
+var SignupcontactPageModule = /** @class */ (function () {
+    function SignupcontactPageModule() {
     }
-    RidesPageModule = __decorate([
+    SignupcontactPageModule = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["J" /* NgModule */])({
             declarations: [
-                __WEBPACK_IMPORTED_MODULE_2__rides__["a" /* RidesPage */],
+                __WEBPACK_IMPORTED_MODULE_2__signupcontact__["a" /* SignupcontactPage */],
             ],
             imports: [
-                __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["e" /* IonicPageModule */].forChild(__WEBPACK_IMPORTED_MODULE_2__rides__["a" /* RidesPage */]),
+                __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["e" /* IonicPageModule */].forChild(__WEBPACK_IMPORTED_MODULE_2__signupcontact__["a" /* SignupcontactPage */]),
             ],
         })
-    ], RidesPageModule);
-    return RidesPageModule;
+    ], SignupcontactPageModule);
+    return SignupcontactPageModule;
 }());
 
-//# sourceMappingURL=rides.module.js.map
+//# sourceMappingURL=signupcontact.module.js.map
 
 /***/ })
 
