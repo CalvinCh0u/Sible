@@ -12,6 +12,13 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatSelectModule} from '@angular/material/select';
 import {MatDatepickerModule,MatNativeDateModule} from '@angular/material';
 
+import { BarcodeScanner } from '@ionic-native/barcode-scanner';
+import { QRScanner } from '@ionic-native/qr-scanner';
+// import { OpenALPR } from '@ionic-native/openalpr';
+
+import { NativeGeocoder } from '@ionic-native/native-geocoder';
+
+
 //normal map
 import { Geolocation } from '@ionic-native/geolocation';
 
@@ -118,6 +125,12 @@ import { RestProvider } from '../providers/rest/rest';
     StatusBar,
     SplashScreen,
     Geolocation,
+    NativeGeocoder,
+    QRScanner,
+    // BarcodeScanner,
+    // OpenALPR,
+    // OpenALPROptions,
+    // OpenALPRResult,
     GoogleMaps,
     Toast,
     // GoogleMap,

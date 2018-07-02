@@ -8,26 +8,25 @@
 </ion-header>
 
 
-<ion-content style="background-color:#e3eaef">
+<ion-content padding style="background-color:#e3eaef">
 
- <!-- <br>
-  <ion-item class="do">
-    <ion-label> <ion-icon name="car"></ion-icon></ion-label>
-    <ion-input (click)="openModal()" id="places" placeholder="Where to?"  clearInput type="text"></ion-input>
-  </ion-item> -->
-  <!--<div style="height:7px">
+  <!-- <div padding> -->
+     <ion-item class="do">
+       <ion-label> <ion-icon color="sibleColor" name="car"></ion-icon></ion-label>
+       <ion-input id="places" placeholder="Current location"  clearInput type="text"></ion-input>
+     </ion-item>
+     <div style="height:2vh"></div>
 
-  </div> -->
+     <ion-item class="do">
+       <ion-label> <ion-icon color="sibleColor" name="pin"></ion-icon></ion-label>
+       <ion-input id="places" placeholder="Where to?"  clearInput type="text"></ion-input>
+     </ion-item>
 
-<!-- <button ion-button (click)="goToSecond()">Test</button> -->
-<!--
-  <ion-item class="do">
-    <ion-label> <ion-icon name="pin"></ion-icon></ion-label>
-    <ion-input id="places" placeholder="Drop-Off Location"  clearInput type="text"></ion-input>
-  </ion-item> -->
+  <!-- </div> -->
+
 
   <!-- <button ion-button (click)="addMarker()"><ion-icon name="add"></ion-icon>Add Marker</button> -->
-  <div style="background-color:#000" #mapCanvas style="height:100% !important;width:100% !important">
+  <div #mapCanvas style="height:100vh !important;width:100vw !important">
   </div>
 
   <ion-fab right bottom>

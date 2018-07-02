@@ -15,11 +15,11 @@
 
 <ion-content padding>
 
-  <ion-grid>
+  <!-- <ion-grid>
 
   <ion-row>
     <ion-col style="text-align:center;color:#0d5487;">
-      <ion-label> <ion-icon style="font-size:2.2em" name="ios-add-circle-outline"></ion-icon></ion-label>
+      <ion-label (click)="OpenALPRScanner()"> <ion-icon style="font-size:2.2em" name="ios-add-circle-outline"></ion-icon></ion-label>
       Licence
     </ion-col>
     <ion-col style="text-align:center;color:#0d5487;">
@@ -27,10 +27,10 @@
       Vin Number
     </ion-col>
   </ion-row>
-</ion-grid>
+</ion-grid> -->
 
   <div><br>
-        <ion-item class="do">
+        <!-- <ion-item class="do">
           <ion-label> <ion-icon name="ios-car-outline"></ion-icon></ion-label>
           <ion-input placeholder="Car Type"  clearInput type="text"></ion-input>
         </ion-item>
@@ -43,10 +43,16 @@
         <ion-item class="do">
           <ion-label> <ion-icon name="ios-car-outline"></ion-icon></ion-label>
           <ion-input placeholder="Car modal"  clearInput type="text"></ion-input>
-        </ion-item><br>
+        </ion-item><br> -->
 
         <div class="padding" style="text-align:center;">
-          <button style="border-color: #0e5387;margin:15px 0;border-radius:50px" id="loginButton" (click)="closeModal()" ion-button block outline color="light">Add publisher</button>
+          <button style="border-color: #0e5387;margin:15px 0;border-radius:50px" id="loginButton" (click)="OpenALPRScanner()" ion-button block outline color="light">Scan Number Plates</button>
+        </div>
+
+        <br><br><br>
+
+        <div class="padding" style="text-align:center;">
+          <button style="border-color: #0e5387;margin:15px 0;border-radius:50px" id="loginButton" (click)="closeModal()" ion-button block outline color="light">Scan Licence Disk</button>
         </div>
   </div>
 

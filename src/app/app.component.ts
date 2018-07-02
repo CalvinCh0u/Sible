@@ -22,7 +22,7 @@ import { App } from 'ionic-angular/components/app/app';
 export class MyApp {
   @ViewChild(Nav) nav: Nav;
 
-  rootPage: any = LoginPage;
+  rootPage: any = HomePage;
 
   pages: Array<{title: string, icon: string, component: any}>;
 

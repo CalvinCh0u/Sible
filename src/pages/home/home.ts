@@ -12,12 +12,13 @@ import { NavController } from 'ionic-angular';
 import { Geolocation } from '@ionic-native/geolocation';
 import { Toast } from '@ionic-native/toast';
 
-import { ModalController } from 'ionic-angular';
-import { ViewController } from 'ionic-angular';
+import { ModalController, ViewController, AlertController } from 'ionic-angular';
 import { ModalPage } from '../modal/modal';
 import { Platform } from 'ionic-angular';
 import { PaymentPage } from '../payment/payment';
 import { RestProvider } from '../../providers/rest/rest';
+import { NativeGeocoder, NativeGeocoderReverseResult, NativeGeocoderForwardResult, NativeGeocoderOptions } from '@ionic-native/native-geocoder';
+
 
 
 // declare var google;
@@ -29,6 +30,11 @@ import { RestProvider } from '../../providers/rest/rest';
   templateUrl: 'home.html'
 })
 export class HomePage {
+
+options: NativeGeocoderOptions = {
+      useLocale: true,
+      maxResults: 5
+  };
 
   user: {
     'userName':'Calvi nooo Chou'
@@ -54,6 +60,8 @@ export class HomePage {
     public restProvider: RestProvider,
     public modalController: ModalController,
     public viewCtrl : ViewController,
+    private alertCtrl :AlertController,
+    private nativeGeocoder: NativeGeocoder,
     public platform: Platform
 
   ) {
@@ -63,7 +71,7 @@ export class HomePage {
     // if(!this.map) this.loadMap();
 
 
-      this.onLocateUser();
+      // this.onLocateUser();
       // setInterval(() => {
       //     this.onLocateUser();
       // this.getUserData();
@@ -76,14 +84,32 @@ export class HomePage {
   }
 
 
+
+
+  decodeGeo(){
+
+    console.log('starting decoding : ......');
+
+    this.nativeGeocoder.reverseGeocode(localStorage.lng, localStorage.lat, this.options)
+    .then((result: NativeGeocoderReverseResult[]) => alert(JSON.stringify(result[0])))
+    .catch((error: any) => console.log(error));
+  }
+
+  encodeGeo(){
+    this.nativeGeocoder.forwardGeocode('Berlin', this.options)
+    .then((coordinates: NativeGeocoderForwardResult[]) => console.log('The coordinates are latitude=' + coordinates[0].latitude + ' and longitude=' + coordinates[0].longitude))
+    .catch((error: any) => console.log(error));
+  }
+
+
   ionViewWillEnter(){
     console.log('ngAfterViewInit MapPage');
-    this.loadMap(); // works fine every time without error
+    // this.loadMap(); // works fine every time without error
   }
 
   ionViewDidEnter(){
     console.log('ionViewDidEnter MapPage');
-    console.log(this.map); // always returns the map object so it's still there
+    // console.log(this.map); // always returns the map object so it's still there
     // if(!this.map) this.loadMap(); // never needs to fire
     // need to reset tab/page stacking order?
   }
@@ -91,12 +117,22 @@ export class HomePage {
 
     ionViewDidLoad(){
       console.log('this is a map ');
+      this.onLocateUser()
       // this.onLocateUser();
       // this.loadMap();
 
       // if(!this.map) this.loadMap();
 
     }
+    showMe() {
+      // let UserData = JSON.stringify(this.qrCodeData);
+       let alert = this.alertCtrl.create({
+         title: 'Map data',
+         message: 'message',
+         buttons: ['Dismiss']
+       });
+       alert.present();
+     }
 
     getUserData(){
 
@@ -116,31 +152,6 @@ export class HomePage {
 
 
 
-    cancelRide(data){
-
-
-
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     goToSecond(){
         this.navCtrl.push(PaymentPage);
@@ -156,8 +167,11 @@ export class HomePage {
             localStorage.lat = location.coords.longitude;
             localStorage.lng = location.coords.latitude;
             this.location = location;
+            // console.log('My locatoin : ' +this.location);
             this.gmLocation.lat = location.coords.latitude;
             this.gmLocation.lng = location.coords.longitude;
+            this.loadMap();
+            this.decodeGeo();
           }
         )
         .catch(
@@ -172,6 +186,8 @@ export class HomePage {
     //     console.log(toast);
     //   });
     loadMap() {
+
+    console.log('Map function is executed');
 
     this.onLocateUser();
 
