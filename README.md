@@ -1,2 +1,0 @@
-# Sible
-codetrics owned application 

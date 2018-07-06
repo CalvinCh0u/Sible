@@ -1,8 +1,0 @@
-{
-  "name": "sible",
-  "app_id": "0855b3d5",
-  "type": "ionic-angular",
-  "integrations": {
-    "cordova": {}
-  }
-}
